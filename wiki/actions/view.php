@@ -38,7 +38,7 @@ function view_GET(Web &$w) {
     );
     
     // Set template vars
-    $w->ctx("body", WikiLib::wiki_format_creole($wiki, $wp));
+    $w->ctx("body", WikiLib::wiki_format_cebe($wiki, $wp));
     $w->ctx("wiki", $wiki);
     $w->ctx("page", $wp);
     $w->ctx("attachments", $w->service("File")->getAttachments($wp));

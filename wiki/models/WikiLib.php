@@ -1,9 +1,25 @@
 <?php
 
 class WikiLib {
-
+	
+	/**
+     * Returns HTML transformed from wiki markup
+     * UNUSED
+     * @param $page
+     */
+    static function wiki_format_cebe($wiki, $page) {
+		$parser = new \cebe\markdown\Markdown();
+		$body = $parser->parse($page->body);
+        
+        // replace wiki links
+        $wn = $wiki->name;
+        $body = preg_replace("/\[\[([a-zA-Z0-9]+)\]\]/", "<a href='" . WEBROOT . "/wiki/view/" . $wn . "/\\1'>\\1</a>", $body);
+        return $body;
+    }
+    
     /**
      * Returns HTML transformed from wiki markup
+     * UNUSED
      * @param $page
      */
     static function wiki_format_textile($wiki, $page) {
@@ -19,6 +35,7 @@ class WikiLib {
 
     /**
      * Returns HTML transformed from wiki markup
+     * UNUSED
      * @param $page
      */
     static function wiki_format_creole($wiki, $page) {

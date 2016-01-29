@@ -5,5 +5,8 @@ Config::set('wiki', array(
     'active' => true,
     'path' => 'modules',
     'topmenu' => true,
-    'search' => array("Wiki Pages" => "WikiPage")
+    'search' => array("Wiki Pages" => "WikiPage"),
+    'dependencies' => array(
+        'cebe/markdown' => '~1.0.1'
+    )
 ));
