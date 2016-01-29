@@ -10,7 +10,7 @@
             <a href="#members">Members</a>
         <?php endif; ?>
         <a href="#comments">Comments</a>
-        <a href="#attachments">Attachments</a>
+        
     </div>
     <div class="tab-body">
         <div id="view">
@@ -26,11 +26,15 @@
                             </li>
                         <?php endforeach;
                     }
-                ?>
+                ?> 
             </ul>
             <div>
                 <?php echo $body?>
             </div>
+            <hr/>
+            <div id="attachments">
+            <?php echo $w->partial("listattachments", array("object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"), "file"); ?>
+        </div>
         </div>
         <div id="wiki-history">
             <?php 
@@ -109,8 +113,6 @@
         <div id="comments">
             <?php echo $w->partial("listcomments", array("object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#comments"), "admin"); ?>
         </div>
-        <div id="attachments">
-            <?php echo $w->partial("listattachments", array("object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"), "file"); ?>
-        </div>
+        
     </div>
 </div>
