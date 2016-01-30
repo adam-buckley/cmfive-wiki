@@ -53,7 +53,7 @@ class Wiki extends DbObject{
 			throw new WikiExistsException("Wiki of name ".$this->getName()." already exists.");
 		}
 		parent::insert();
-		$this->addPage("HomePage", "= This is the HomePage =");
+		$this->addPage("HomePage", "#This is the HomePage");
 		$this->addUser($this->w->Auth->user(),"editor");
 	}
 
