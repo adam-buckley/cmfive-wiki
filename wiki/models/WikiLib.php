@@ -9,11 +9,12 @@ class WikiLib {
      */
     static function wiki_format_cebe($wiki, $page) {
 		$parser = new \cebe\markdown\Markdown();
-		$body = $parser->parse($page->body);
-        
-        // replace wiki links
+		// replace wiki links
         $wn = $wiki->name;
+        $body=$page->body;
         $body = preg_replace("/\[\[([a-zA-Z0-9]+)\]\]/", "<a href='" . WEBROOT . "/wiki/view/" . $wn . "/\\1'>\\1</a>", $body);
+        $body = $parser->parse($body);
+        
         return $body;
     }
     
