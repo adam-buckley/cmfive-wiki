@@ -77,6 +77,8 @@
         <?php if ($wiki->canEdit($w->Auth->user())):?>
             <div id="edit" class="clearfix">
                 <?php echo $editForm; ?>
+                <div id="attachments">
+            <?php echo $w->partial("listattachments", array("object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"), "file"); ?>
             </div>
         <?php endif; ?>
         <?php if ($wiki->isOwner($w->Auth->user()) && $page->name == "HomePage"):?>
