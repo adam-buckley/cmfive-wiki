@@ -23,14 +23,14 @@ class WikiService extends DbService {
 
 	function getWikis() {
 		if ($this->w->Auth->user()->is_admin) {
-			return $this->getObjects("Wiki",array("is_deleted"=>0));
+			return $this->getObjects("Wiki",array("is_deleted" => 0));
 		} else {
-			$wus = $this->getObjects("WikiUser", array("user_id",$this->w->Auth->user()->id));
+			$wus = $this->getObjects("WikiUser", array("user_id" => $this->w->Auth->user()->id));
 			if (!$wus) {
 				return null;
 			}
 			foreach ($wus as $wu) {
-				$wikis[] = $this->getObject("Wiki",$wu->wiki_id);
+				$wikis[] = $this->getObject("Wiki", $wu->wiki_id);
 			}
 			return $wikis;
 		}
