@@ -1,6 +1,6 @@
 <?php
 
-class WikiModuleInitialMigration extends CmfiveMigration {
+class WikiInitialMigration extends CmfiveMigration {
 
 	public function up() {
 		$column = parent::Column();
@@ -12,12 +12,13 @@ class WikiModuleInitialMigration extends CmfiveMigration {
 		 * wiki TABLE
 		 */
 		if (!$this->hasTable('wiki')) {
-			$this->table('example_data', [
+			$this->table('wiki', [
 						'id' => false,
 						'primary_key' => 'id'
 					])->addColumn($column)
 					->addColumn('title', 'string', ['limit' => 255])
 					->addColumn('name', 'string', ['limit' => 255])
+					->addColumn('type', 'string', ['limit' => 40])
 					->addColumn('owner_id', 'integer' )
 					->addColumn('is_public', 'integer' )
 					->addColumn('last_modified_page_id', 'integer' )
@@ -28,8 +29,8 @@ class WikiModuleInitialMigration extends CmfiveMigration {
 		/**
 		 * wiki page TABLE
 		 */
-		if (!$this->hasTable('wiki')) {
-			$this->table('example_data', [
+		if (!$this->hasTable('wiki_page')) {
+			$this->table('wiki_page', [
 						'id' => false,
 						'primary_key' => 'id'
 					])->addColumn($column)
@@ -43,8 +44,8 @@ class WikiModuleInitialMigration extends CmfiveMigration {
 		/**
 		 * wiki page history TABLE
 		 */
-		if (!$this->hasTable('wiki')) {
-			$this->table('example_data', [
+		if (!$this->hasTable('wiki_page_history')) {
+			$this->table('wiki_page_history', [
 						'id' => false,
 						'primary_key' => 'id'
 					])->addColumn($column)
@@ -59,8 +60,8 @@ class WikiModuleInitialMigration extends CmfiveMigration {
 		/**
 		 * wiki user TABLE
 		 */
-		if (!$this->hasTable('wiki')) {
-			$this->table('example_data', [
+		if (!$this->hasTable('wiki_user')) {
+			$this->table('wiki_user', [
 						'id' => false,
 						'primary_key' => 'id'
 					])->addColumn($column)

@@ -3,5 +3,9 @@
 function index_ALL(Web $w) {
     $wiki = $page = null;
     $w->Wiki->navigation($w, $wiki, $page);
-    $w->ctx("wikis", $w->Wiki->getWikis());
+    try {
+		$w->ctx("wikis", $w->Wiki->getWikis());
+	} catch (Exception $ex) {
+		$w->error($ex->getMessage(),"/");
+	}
 }

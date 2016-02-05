@@ -1,7 +1,11 @@
 <?php
+/*****************************
+ * Persistent object representing a Wiki
+*****************************/
 class Wiki extends DbObject{
 	public $title;
 	public $name;
+	public $type;
 	public $dt_created;
 	public $creator_id;
 	public $dt_modified;
@@ -12,6 +16,10 @@ class Wiki extends DbObject{
 	public $is_public;
 	public $last_modified_page_id;
 
+	/*****************************
+	 * Load history entries for this wiki
+	 * @return array 
+	*****************************/
 	function getHistory() {
 		$sql="
 		SELECT DISTINCT name, creator_id, dt_created
@@ -20,26 +28,51 @@ class Wiki extends DbObject{
 		
 		return $this->_db->sql($sql)->fetch_all();
 	}
+	
+	/*****************************
+	 * Load the wiki page named HomePage for this wiki
+	 * @return WikiPage or null
+	*****************************/
 	function getHomePage() {
 		return $this->getPage($this->id,"HomePage");
 	}
 
+	/*****************************
+	 * Load page with matching name for this wiki
+	 * @return WikiPage or null 
+	*****************************/
 	function getPage($name) {
 		return $this->getObject("WikiPage",
 		array("is_deleted"=>0,
 				  "wiki_id"=>$this->id,
 				  "name"=>$name));
 	}
+	
+	/*****************************
+	 * Load a wiki page with matching id
+	 * @return WikiPage or null 
+	*****************************/	
 	function getPageById($id) {
 		return $this->getObject("WikiPage",
 		array("is_deleted"=>0,
 				  "id"=>$id));
 	}
-
+	
+	/*****************************
+	 * Generate the name of the wiki from the title by removing spaces
+	 * @return string
+	*****************************/
 	function getName() {
 		return ucfirst(str_replace(" ","",$this->title));
 	}
 
+	/*****************************
+	 * Insert a new wiki record into the database
+	 * Validate and set automatic fields for create
+	 * @return 
+	 * @throws WikiException
+	 * @throws WikiExistsException
+	*****************************/	
 	function insert($force_validation = false) {
 		if (!$this->title) {
 			throw new WikiException("This wiki needs a title.");
@@ -53,10 +86,19 @@ class Wiki extends DbObject{
 			throw new WikiExistsException("Wiki of name ".$this->getName()." already exists.");
 		}
 		parent::insert();
-		$this->addPage("HomePage", "#This is the HomePage");
+		if ($this->type=="richtext" ) {
+			$this->addPage("HomePage", "<h1>This is the HomePage</h1>");
+		} else {
+			$this->addPage("HomePage", "#This is the HomePage");
+		}
 		$this->addUser($this->w->Auth->user(),"editor");
 	}
 
+	/*****************************
+	 * Update wiki page for this wiki
+	 * based on it's name.
+	 * @return array 
+	*****************************/
 	function updatePage($name,$body) {
 		$p = $this->getPage($name);
 		if ($p) {
@@ -68,6 +110,10 @@ class Wiki extends DbObject{
 		return $p;
 	}
 
+	/*****************************
+	 * Create a new wiki page in the database for this wiki
+	 * @return array 
+	*****************************/
 	function addPage($name,$body) {
 		$p = new WikiPage($this->w);
 		$p->wiki_id = $this->id;
@@ -79,25 +125,57 @@ class Wiki extends DbObject{
 		return $p;
 	}
 
+	/*****************************
+	 * Load all wiki user associations for this wikie
+	 * @return array 
+	*****************************/
 	function getUsers() {
 		return $this->getObjects("WikiUser",array("wiki_id"=>$this->id));
 	}
 
+
+	/*****************************
+	 * PER RECORD ACCESS CONTROLS
+	*****************************/
+	/*****************************
+	 * Check if a user can read this record
+	 * @return boolean 
+	*****************************/
 	function canRead(User $user) {
 		$wu = $this->getObject("WikiUser",array("user_id"=>$user->id,"wiki_id"=>$this->id));
-		return $wu != null && ($this->isOwner($user) || $wu->role == "reader" || $wu->role == "editor");
+		$ret=(	$this->Auth->user()->is_admin || 
+			(	$wu != null && 
+				($this->isOwner($user) || $wu->role == "reader" || $wu->role == "editor")
+			)
+		);
+		return $ret;
 	}
-	
+
+	/*****************************
+	 * Check if a user can edit this record
+	 * @return boolean 
+	*****************************/	
 	function canEdit(User $user) {
 		$wu = $this->getObject("WikiUser",array("user_id"=>$user->id,"wiki_id"=>$this->id));
-		return $wu != null && ($this->isOwner($user)  || $wu->role == "editor");
+		return $this->Auth->user()->is_admin ||($wu != null && ($this->isOwner($user)  || $wu->role == "editor"));
 	}
-	
+
+	/*****************************
+	 * Check if this user is a member of any wikis
+	 * @return boolean
+	*****************************/	
 	function isUser($user) {
 		$wu = $this->getObject("WikiUser",array("user_id"=>$user->id,"wiki_id"=>$this->id));
 		return $wu != null;	
 	}
-	
+
+	/*****************************
+	 * Store a new user for this wiki
+	 * You may provide an addition role parameter.default is reader
+	 * @param User
+	 * @param string
+	 * @return  
+	*****************************/	
 	function addUser($user,$role="reader") {
 		if (!$this->isUser($user)) {
 			$wu = new WikiUser($this->w);
@@ -108,19 +186,17 @@ class Wiki extends DbObject{
 		}
 	}
 
-	/**
-	 * get a WikiUser object by WikiUser::id
-	 * 
+	/*****************************
+	 * Get a WikiUser object by WikiUser::id
 	 * @param int $id
-	 */
+	 ******************************/
 	function getUserById($id) {
 		return $this->getObject("WikiUser",$id);
 	}
 	
-	/**
-	 * remove a wiki user by the wiki_user::id
-	 *
-	 */
+	/*****************************
+	* Remove a wiki user by the wiki_user::id
+	******************************/
 	function removeUser($id) {
 		$wu = $this->getUserById($id);
 		if ($wu) {
@@ -128,6 +204,10 @@ class Wiki extends DbObject{
 		}
 	}
 	
+	/*****************************
+	 * Check if a user is the owner of this wiki
+	 * @return boolean 
+	*****************************/
 	function isOwner($user) {
 		return $this->owner_id == $user->id;
 	}
