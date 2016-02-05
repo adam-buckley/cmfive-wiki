@@ -13,7 +13,7 @@ function edit_POST(Web &$w) {
 		}
 		$wiki->updatePage($pm['pagename'],$w->request("body"));
 		$w->msg("Page updated.","/wiki/view/".$pm['wikiname']."/".$pm['pagename']);
-	} catch (WikiException e) {
+	} catch (WikiException $ex) {
 		$w->error($ex->getMessage(),"/wiki");
 	}
 }

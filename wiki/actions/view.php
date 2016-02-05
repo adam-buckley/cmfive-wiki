@@ -34,7 +34,6 @@ function view_GET(Web &$w) {
 		// Set edt wiki form
 		$editForm = array(
 			"" => array(
-				//array(array("", "static", "buttons", "",))
 				array(array("", "textarea", "body", $wp->body, 60, 24, false))
 			)
 		);
@@ -42,7 +41,8 @@ function view_GET(Web &$w) {
 		// Set template vars
 		if ($w->type=="richtext") {
 			$w->ctx("body",$wp->body);
-		} else if ($w->type=="markdown") {
+			
+		} else  {  // richtext etc
 			$w->ctx("body", WikiLib::wiki_format_cebe($wiki, $wp));
 		}
 		$w->ctx("wiki", $wiki);

@@ -14,7 +14,7 @@ function editmember_GET(Web &$w) {
 		$w->ctx("wiki",$wiki);
 		$w->ctx("mem",$mem);
 //$w->setLayout(null);
-	} catch (WikiException e) {
+	} catch (WikiException $ex) {
 		$w->error($ex->getMessage(),"/wiki");
 	}
 }
@@ -35,7 +35,7 @@ function editmember_POST(&$w) {
 		$mem->wiki_id = $wiki->id;
 		$mem->insertOrUpdate();
 		$w->msg("Member updated.","/wiki/view/".$wiki->name."/HomePage#members");
-	} catch (WikiException e) {
+	} catch (WikiException $ex) {
 		$w->error($ex->getMessage(),"/wiki");
 	}
 }

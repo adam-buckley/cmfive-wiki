@@ -100,10 +100,14 @@
 						
 						<script>
 							$(document).ready(function() {
-								new SimpleMDE({
+								var simplemde = new SimpleMDE({
 									element: document.getElementById("body"),
 									spellChecker: false,
 								});
+								simplemde.codemirror.on("change", function(){
+									$('#wikibuttons').show();
+								});
+
 							});
 						</script>
 					<?php endif; ?>
