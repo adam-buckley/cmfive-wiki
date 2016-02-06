@@ -14,6 +14,10 @@ class WikiPageHistory extends WikiPage {
 	function insert($force_validation = false) {
 		DbObject::insert();
 	}
+	
+	function delete($force = false) {
+		DbObject::delete($force);
+	}
 
 	function getDbTableName() {
 		return "wiki_page_history";

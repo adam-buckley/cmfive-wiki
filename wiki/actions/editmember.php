@@ -1,7 +1,6 @@
 <?php
 function editmember_GET(Web &$w) {
 	try {
-		$w->Wiki->navigation($w,$wiki,$page);
 		$pm = $w->pathMatch("wid","mid");
 		$wiki = $w->Wiki->getWikiById($pm['wid']);
 		if (!$wiki || !$wiki->isOwner($w->Auth->user()) ) {
@@ -13,6 +12,8 @@ function editmember_GET(Web &$w) {
 		}
 		$w->ctx("wiki",$wiki);
 		$w->ctx("mem",$mem);
+		//$w->Wiki->navigation($w,$wiki,$page);
+		
 //$w->setLayout(null);
 	} catch (WikiException $ex) {
 		$w->error($ex->getMessage(),"/wiki");

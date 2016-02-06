@@ -74,5 +74,20 @@ class WikiPage extends DbObject {
 	function getHtml() {
 		return $this->body;
 	}
+	
+	/*****************************
+	 * Delete a wiki page and all associated history
+	 * @return 
+	*****************************/
+	function delete($force = false) {
+		$history=$this->getHistory();
+		if (!empty($history))  {
+			foreach ($history as $h) {
+				if (!empty($h)) $h->delete($force);
+			}
+		}
+		parent::delete($force);
+	}
+
 
 }

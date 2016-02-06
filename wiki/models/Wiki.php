@@ -30,6 +30,18 @@ class Wiki extends DbObject{
 	}
 	
 	/*****************************
+	 * Load all page for this wiki
+	 * @return WikiPage or null 
+	*****************************/
+	function getPages() {
+		return $this->getObjects("WikiPage",
+			array("is_deleted"=>0,
+				  "wiki_id"=>$this->id
+			)
+		);
+	}
+	
+	/*****************************
 	 * Load the wiki page named HomePage for this wiki
 	 * @return WikiPage or null
 	*****************************/
@@ -161,6 +173,18 @@ class Wiki extends DbObject{
 	}
 
 	/*****************************
+	 * Check if a user can delete this record
+	 * @return boolean 
+	*****************************/	
+	function canDelete(User $user) {
+		if ($this->isOwner($user) || $this->Auth->user()->is_admin) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/*****************************
 	 * Check if this user is a member of any wikis
 	 * @return boolean
 	*****************************/	
@@ -211,4 +235,26 @@ class Wiki extends DbObject{
 	function isOwner($user) {
 		return $this->owner_id == $user->id;
 	}
+	
+	/*****************************
+	 * Delete a wiki and all associated records
+	 * @return 
+	*****************************/
+	function delete($force = false) {
+		$pages=$this->getPages();
+		if (!empty($pages))  {
+			foreach ($pages as $page) {
+				if (!empty($page))$page->delete($force);
+			}
+		}
+		$users=$this->getUsers();
+		if (!empty($users))  {
+			foreach ($users as $user) {
+				if (!empty($user)) $user->delete($force);
+			}
+		}
+		parent::delete($force);
+	}
+	
+	
 }
