@@ -1,4 +1,4 @@
-<form action="/wiki/edit/<?php echo $wiki->name ?>/<?php echo $page->name ?>" method="POST" target="_self" class=" small-12 columns"><input type="hidden" name="wikieeditform" value="9d23d65bae7144">
+<form id="wikieditform" action="/wiki/edit/<?php echo $wiki->name ?>/<?php echo $page->name ?>" method="POST" target="_self" class=" small-12 columns"><input type="hidden" name="wikieeditform" value="9d23d65bae7144">
 
 	<div class="tabs">
 		<div>
@@ -114,19 +114,19 @@
 					<?php if ($wiki->type=="richtext"):?>
 					<script>
 						$(document).ready(function() {
+							CKEDITOR.plugins.addExternal( 'wikipage', '/modules/wiki/assets/ckeditorplugins/wikipage/','plugin.js','' );
 							CKEDITOR.config.extraPlugins = 'wikipage';
 							$('#body').each(function(){
 								CKEDITOR.replace(this);
 								
 							});
-							//$("#body").on('keyup paste',function() {console.log('change');});
 							var editor=CKEDITOR.instances.body;
-							console.log(editor.on('contentDom', function() {
+							editor.on('contentDom', function() {
 								var editable = editor.editable();
 								editable.attachListener( editor.document, 'keyup', function() {
 									$('#wikibuttons').show();
 								} );
-							}));
+							});
 							
 						});
 					</script>	
