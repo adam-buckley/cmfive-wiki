@@ -12,8 +12,12 @@
 				<?php if ($wiki->isOwner($w->Auth->user()) && $page->name == "HomePage"):?>
 					<a href="#members">Members</a>
 				<?php endif; ?>
+				<?php if ($w->Auth->hasRole('comment')):?>
 				<a href="#comments">Comments</a>
+				<?php endif; ?>
+				<?php if ($w->Auth->hasRole('file_upload') && $w->Auth->hasRole('file_download')):?>
 				<a href="#attachments">Attachments</a>
+				<?php endif; ?>
 				<!--span style="float:right;"><button class="button tiny " onclick="modal_history.push(&quot;/wiki/markup?isbox=1&quot;); $(&quot;#cmfive-modal&quot;).foundation(&quot;reveal&quot;, &quot;open&quot;, &quot;/wiki/markup?isbox=1&quot;);return false;">Markup Help</button></span-->
 				<span id="wikibuttons" style="float:right; display: none;" ><button class="button tiny tiny button savebutton" type="submit">Save</button><button class="button tiny tiny button cancelbutton" style="margin-right: 2em;" type="button" onclick="if($('#cmfive-modal').is(':visible')){ $('#cmfive-modal').foundation('reveal', 'close'); } else { window.history.back(); }">Cancel</button></span>
 			</div>
@@ -192,12 +196,16 @@
 					<?php endif; ?>
 				</div>
 			<?php endif; ?>
+			<?php if ($w->Auth->hasRole('comment')):?>
 			<div id="comments">
 				<?php echo $w->partial("listcomments", array("object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#comments"), "admin"); ?>
 			</div>
+			<?php endif; ?>
+			<?php if ($w->Auth->hasRole('file_upload') && $w->Auth->hasRole('file_download')):?>
 			<div id="attachments">
 			<?php echo $w->partial("listattachments", array("object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"), "file"); ?>
 			</div>
+			<?php endif; ?>
 		</div>
 	</div>
 
