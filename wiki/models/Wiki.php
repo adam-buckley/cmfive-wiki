@@ -30,6 +30,21 @@ class Wiki extends DbObject{
 	}
 	
 	/*****************************
+	 * Load history entries for this wiki with results limited
+	 * @return array 
+	*****************************/
+	function getRecentHistory($limit=1) {
+		$sql="
+		SELECT DISTINCT name, creator_id, unix_timestamp(dt_created) dt_created
+		FROM wiki_page_history
+		WHERE wiki_id = ".$this->id." order by dt_created desc, name asc 
+		limit ".$limit;
+		$result=$this->_db->sql($sql)->fetch_all();
+		return $result;
+	}
+	
+	
+	/*****************************
 	 * Load all page for this wiki
 	 * @return WikiPage or null 
 	*****************************/

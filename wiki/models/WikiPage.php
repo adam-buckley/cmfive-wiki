@@ -12,7 +12,8 @@ class WikiPage extends DbObject {
 	public $modifier_id;
 	public $is_deleted;
 	public $body;
-
+	
+	
 	function getWiki() {
 		return $this->Wiki->getWikiById($this->wiki_id);			
 	}
@@ -50,11 +51,28 @@ class WikiPage extends DbObject {
 	}
 	
 	function update($force_null_values = false, $force_validation = false) {
-		$hist = new WikiPageHistory($this->w);
-		$hist->fill($this->toArray());
-		$hist->id = null;
-		$hist->wiki_page_id = $this->id;
-		$hist->insert();
+		// protect against ajax history spamming
+		$h= $this->getWiki()->getRecentHistory(2);
+		// diff first two histories (as stable timezones)
+		if (count($h)>1)  {
+			$ts=$h[1]['dt_created'];
+			$now=$h[0]['dt_created'];
+			// if gap between last two histories is less that 2 minutes
+			if ((($now - $ts) > 120)) {
+				$hist = new WikiPageHistory($this->w);
+				$hist->fill($this->toArray());
+				$hist->id = null;
+				$hist->wiki_page_id = $this->id;
+				$hist->insert();
+			}
+		// need to create first two entries
+		} else {
+			$hist = new WikiPageHistory($this->w);
+			$hist->fill($this->toArray());
+			$hist->id = null;
+			$hist->wiki_page_id = $this->id;
+			$hist->insert();
+		}
 		parent::update();
 	}
 
