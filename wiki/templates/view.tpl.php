@@ -46,7 +46,7 @@
 						}
 					?> 
 				</ul>
-				<div>
+				<div id="viewbody" >
 					<?php echo $body?>
 				</div>
 				<hr/>
@@ -123,162 +123,34 @@
 					<?php if ($wiki->type=="richtext"):?>
 					<script src="/modules/wiki/assets/CSSelector.js" ></script>
 					<script>
-						
+						function my_updateCallBack(content) {
+							$('#viewbody').html(content);
+						}
+						function my_changeCallBack(content) {
+							$('#wikiautosavebuttons').show();
+							$('#wikiautosavebuttons .savebutton').show();
+							$('#wikiautosavebuttons .savedbutton').hide();
+						}
+						function my_saveCallBack(content) {
+							$('#wikiautosavebuttons .savebutton').hide();
+							$('#wikiautosavebuttons .savedbutton').show();
+						}
 						$(document).ready(function() {
 							CKEDITOR.plugins.addExternal( 'wikipage', '/modules/wiki/assets/ckeditorplugins/wikipage/','plugin.js','' );
-							CKEDITOR.config.extraPlugins = 'wikipage';
+							CKEDITOR.plugins.addExternal( 'liveedit', '/modules/wiki/assets/ckeditorplugins/liveedit/','plugin.js','' );
+							CKEDITOR.config.extraPlugins = 'wikipage,liveedit';
+						
 							$('#body').each(function(){
-								CKEDITOR.replace(this);
-								
-							});
-							var editor=CKEDITOR.instances.body;
-							var lastModified=<?php echo $page->dt_modified ?>;
-							var updatePollActive=true;
-							var updateTimer=null;
-							var startUpdatePoll = function() {
-								if (updateTimer) clearTimeout(updateTimer);
-								updateTimer=setTimeout(function() {
-									if (updatePollActive) { 
-										$.ajax(
-											'/wiki/ajaxpollpage/<?php echo $wiki->name?>/<?php echo $page->name; ?>/'+lastModified,
-											{
-												cache: false,
-											}
-										).done(function(content) {
-											if (content) {
-												var parts=content.trim().split(":::DT_MODIFIED:::");
-												if (parts && parts.length > 1) {
-													// save cursor position/selection
-													var selection = editor.getSelection();
-													var range = selection.getRanges()[0];
-													if (range) {
-															//call function, pass any element:
-														var startPath=CSSelector(range.startContainer.$);
-														var startPathParts=startPath.split('>');
-														startPath=startPathParts.slice(0,startPathParts.length-1).join('>');
-														var endPath=CSSelector(range.startContainer.$);
-														var endPathParts=endPath.split('>');
-														endPath=endPathParts.slice(0,endPathParts.length-1).join('>');
-														var savedSelection={
-															startPath : startPath,
-															startOffset : range.startOffset,
-															endPath : endPath,
-															endOffset : range.endOffset
-														
-														};
-														console.log('SAVEDSEL',savedSelection);
-														// modify text
-														editor.setData(parts[1]);
-														lastModified=parts[0];
-														// restore selection
-														editor.focus();
-														var startElement=editor.document.findOne(savedSelection.startPath ).getFirst();
-														var endElement=editor.document.findOne(savedSelection.endPath ).getFirst();
-														// replace full selection
-														if (startElement && endElement) { 
-															var range = editor.createRange();
-															try {
-																range.setStart( startElement,savedSelection.startOffset );
-																range.setEnd( startElement,savedSelection.endOffset );
-																selection.selectRanges( [ range ] );
-																console.log('REPLACE RANGE',range);
-															} catch (e) {
-																console.log(['FAIL REPLACE RANGE',e]);
-															}
-															
-														// fallback
-														} else {
-															// modify text
-															editor.setData(parts[1]);
-															lastModified=parts[0];
-														}
-													} else {
-														// modify text
-														editor.setData(parts[1]);
-														lastModified=parts[0];
-													}
-												}
-											}												
-										})
-										.always(function(content) {
-											startUpdatePoll();
-										})
-										;										
-									} else {
-										startUpdatePoll();
-									}
-								},5000);
-							}
-							startUpdatePoll();
-							editor.on('contentDom', function() {
-								var saveTimer=null;
-								var editable = editor.editable();
-								
-								
-								
-								editable.attachListener( editor.document, 'keyup', function() {
-									updatePollActive=false;
-									$('#wikiautosavebuttons').show();
-									$('#wikiautosavebuttons .savebutton').show();
-									$('#wikiautosavebuttons .savedbutton').hide();
-									if (saveTimer) clearTimeout(saveTimer);
-									saveTimer=setTimeout(function() {
-										var doSave=function() {
-											var val=editor.getData();
-											var data={'body' : val };
-											$.post(
-												'/wiki/ajaxsavepage/<?php echo $wiki->name?>/<?php echo $page->name?>/'+lastModified,
-												data,
-												function(response) {
-													var parts=response.split(":::DT_MODIFIED:::");
-													if (parts && parts.length > 1) {
-														// reload with other changes
-														if (confirm('Your changes conflict with those made by another user. Click OK to reload with their changes or Cancel to force your changes?')) {
-															editor.setData(parts[1]); 
-															// force save with updated modified date
-															$.post(
-																'/wiki/ajaxsavepage/<?php echo $wiki->name?>/<?php echo $page->name?>/' + parts[0],
-																data,
-																function(response) {
-																	$('#wikiautosavebuttons .savebutton').hide();
-																	$('#wikiautosavebuttons .savedbutton').show();
-																	updatePollActive=true;
-																	var iparts=response.split(":::DT_MODIFIED:::");
-																	lastModified=iparts[0];
-																}
-															);
-															
-															//
-														// force these changes
-														} else {
-															lastModified=parts[0];
-															$.post(
-																'/wiki/ajaxsavepage/<?php echo $wiki->name?>/<?php echo $page->name?>/' + parts[0],
-																data,
-																function(response) {
-																	$('#wikiautosavebuttons .savebutton').hide();
-																	$('#wikiautosavebuttons .savedbutton').show();
-																	var iparts=response.split(":::DT_MODIFIED:::");
-																	lastModified=iparts[0];
-																	updatePollActive=true;
-																	startUpdatePoll();
-																}
-															);
-															
-														}
-													} else {
-														lastModified=parts[0];
-														updatePollActive=true;
-														startUpdatePoll();
-														$('#wikiautosavebuttons .savebutton').hide();
-														$('#wikiautosavebuttons .savedbutton').show();
-													}
-												}
-											)
-										}
-										doSave();
-									},1000);
-								})
+								CKEDITOR.replace(this,{
+									lastModified: '<?php echo $page->dt_modified ?>',
+									pollUrl: '/wiki/ajaxpollpage/<?php echo $wiki->name?>/<?php echo $page->name; ?>/',
+									saveUrl: '/wiki/ajaxsavepage/<?php echo $wiki->name?>/<?php echo $page->name; ?>/',
+									updateCallBack: 'my_updateCallBack',
+									changeCallBack: 'my_changeCallBack',
+									saveCallBack: 'my_saveCallBack',
+									saveTimeOut: 5000,
+									pollTimeOut: 3000,
+								});
 							});
 						});
 					</script>	
