@@ -17,11 +17,12 @@ if (!empty($wikis)) {
 				if ($wi->canDelete($w->Auth->user())) {
 					$delLink=Html::ab(WEBROOT."/wiki/delwiki/".$wi->id,'Delete','','','Do you really want to delete this wiki and all of its pages?');
 				}
+				$wuser = $w->Auth->getUser($p->modifier_id);
 				$table[] = array(
 					Html::a(WEBROOT."/wiki/view/".urlencode($wi->name)."/HomePage","<b>".$wi->title."</b>"),
 					formatDateTime(0 + $wi->dt_created), 
 					formatDateTime(0 + $p->dt_modified), 
-					empty($w->Auth->getUser($p->modifier_id)) ? '' : $w->Auth->getUser($p->modifier_id)->getFullName(),
+					empty($wuser) ? '' : $w->Auth->getUser($p->modifier_id)->getFullName(),
 					Html::a(WEBROOT."/wiki/view/".$wi->name."/".$p->name,$p->name),$delLink
 				);
 			}
@@ -33,4 +34,3 @@ if ($wikiCount==0)  {
 	echo "There are no wikis yet.<br>";
 	echo Html::ab(WEBROOT."/wiki/createwiki/",'Create a wiki');
 }
-?>

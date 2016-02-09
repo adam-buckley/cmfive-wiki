@@ -18,7 +18,6 @@ class WikiInitialMigration extends CmfiveMigration {
 					])->addColumn($column)
 					->addColumn('title', 'string', ['limit' => 255])
 					->addColumn('name', 'string', ['limit' => 255])
-					->addColumn('type', 'string', ['limit' => 40])
 					->addColumn('owner_id', 'integer' )
 					->addColumn('is_public', 'integer' )
 					->addColumn('last_modified_page_id', 'integer' )
