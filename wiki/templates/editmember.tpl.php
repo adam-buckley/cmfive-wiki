@@ -4,4 +4,3 @@
 	$lines[] = array("Role","select","role",$mem->role,array("reader","editor"));
 
 	echo Html::form($lines,$w->localUrl("/wiki/editmember/".$wiki->id."/".$mem->id),"POST","Save");
-?>
