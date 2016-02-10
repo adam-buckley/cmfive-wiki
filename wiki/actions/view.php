@@ -16,9 +16,6 @@ function view_GET(Web &$w) {
 		}
 
 		// If page doesn't exist, make one
-		if (strlen(trim($pm['pagename']))=='') {
-			$pm['pagename']="HomePage";
-		}
 		$wp = $wiki->getPage($pm['pagename']);
 		if (!$wp) {
 			$wp = $wiki->addPage($pm['pagename'], "New Page.");

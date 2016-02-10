@@ -67,7 +67,6 @@ CKEDITOR.dialog.add( 'wikipageDialog', function( editor ) {
 				
 				// Finally, insert the element into the editor at the caret position.
 				editor.insertElement( link );
-				editor.document.fire("keyup");
 			} 
 		}
 	};

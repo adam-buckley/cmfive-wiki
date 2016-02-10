@@ -1,5 +1,4 @@
-<form id="wikieditform" action="/wiki/edit/<?php echo $wiki->name ?>/<?php echo $page->name ?>" method="POST" target="_self" class=" small-12 columns">
-<input type="hidden" name="wikieeditform" value="9d23d65bae7144">
+<form id="wikieditform" action="/wiki/edit/<?php echo $wiki->name ?>/<?php echo $page->name ?>" method="POST" target="_self" class=" small-12 columns"><input type="hidden" name="wikieeditform" value="9d23d65bae7144">
 
 	<div class="tabs">
 		<div>
@@ -20,10 +19,7 @@
 				<a href="#attachments">Attachments</a>
 				<?php endif; ?>
 				<!--span style="float:right;"><button class="button tiny " onclick="modal_history.push(&quot;/wiki/markup?isbox=1&quot;); $(&quot;#cmfive-modal&quot;).foundation(&quot;reveal&quot;, &quot;open&quot;, &quot;/wiki/markup?isbox=1&quot;);return false;">Markup Help</button></span-->
-				<span id="wikibuttons" style="float:right; display: none;" ><button class="button tiny tiny button savebutton" type="submit">Save</button><button class="button tiny tiny button savebutton" type="submit">Save</button><button class="button tiny tiny button cancelbutton" style="margin-right: 2em;" type="button" onclick="if($('#cmfive-modal').is(':visible')){ $('#cmfive-modal').foundation('reveal', 'close'); } else { window.history.back(); }">Cancel</button></span>
-				
-				<span id="wikiautosavebuttons" style="float:right; display: none;" ><button class="button tiny tiny button savedbutton" disabled="true" type="submit">Saved</button><button class="button tiny tiny button savebutton" disabled="true" type="submit">Saving</button></span>
-
+				<span id="wikibuttons" style="float:right; display: none;" ><button class="button tiny tiny button savebutton" type="submit">Save</button><button class="button tiny tiny button cancelbutton" style="margin-right: 2em;" type="button" onclick="if($('#cmfive-modal').is(':visible')){ $('#cmfive-modal').foundation('reveal', 'close'); } else { window.history.back(); }">Cancel</button></span>
 			</div>
 			
 		</div>
@@ -45,7 +41,7 @@
 						}
 					?> 
 				</ul>
-				<div id="viewbody" >
+				<div>
 					<?php echo $body?>
 				</div>
 				<hr/>
@@ -120,57 +116,22 @@
 						</script>
 					<?php endif; ?>
 					<?php if ($wiki->type=="richtext"):?>
-					<script src="/modules/wiki/assets/CSSelector.js" ></script>
 					<script>
-						function my_updateCallBack(record) {
-							console.log('UPDATE');
-							$('#viewbody').html(record.body);
-						}
-						function my_changeCallBack() {
-							$('#wikiautosavebuttons').show();
-							$('#wikiautosavebuttons .savebutton').show();
-							$('#wikiautosavebuttons .savedbutton').hide();
-						}
-						function my_saveCallBack(record) {
-							console.log('SAVE');
-							console.log(record);
-							$('#viewbody').html(record.body);
-							$('#wikiautosavebuttons .savebutton').hide();
-							$('#wikiautosavebuttons .savedbutton').show();
-						}
 						$(document).ready(function() {
 							CKEDITOR.plugins.addExternal( 'wikipage', '/modules/wiki/assets/ckeditorplugins/wikipage/','plugin.js','' );
-							CKEDITOR.plugins.addExternal( 'liveedit', '/modules/wiki/assets/ckeditorplugins/liveedit/','plugin.js','' );
-							CKEDITOR.config.extraPlugins = 'wikipage,liveedit';
-							/*************************************************
-							 * AUTH TOKEN
-							 *************************************************/
-							$.ajax(
-								"/rest/token?apikey=<?php echo Config::get("system.rest_api_key") ?>",
-								{
-									cache: false,
-									dataType: "json"
-								}
+							CKEDITOR.config.extraPlugins = 'wikipage';
+							$('#body').each(function(){
+								CKEDITOR.replace(this);
 								
-							/*************************************************
-							 * NOW CREATE EDITOR
-							 *************************************************/
-							).done(function(token) {
-								$('#body').each(function(){
-									CKEDITOR.replace(this,{
-										lastModified: '<?php echo $page->dt_modified ?>',
-										pollUrl: '/rest/index/WikiPage/id___equal/<?php echo $page->id; ?>/dt_modified___greater/',
-										saveUrl: '/rest/save/WikiPage/',
-										updateCallBack: 'my_updateCallBack',
-										changeCallBack: 'my_changeCallBack',
-										saveCallBack: 'my_saveCallBack',
-										saveTimeOut: 2000,
-										pollTimeOut: 3000,
-										requestParameters: 'token=' + token.success ,
-										saveData : {"id": "<?php echo $page->id ?>" }
-									});
-								});
 							});
+							var editor=CKEDITOR.instances.body;
+							editor.on('contentDom', function() {
+								var editable = editor.editable();
+								editable.attachListener( editor.document, 'keyup', function() {
+									$('#wikibuttons').show();
+								} );
+							});
+							
 						});
 					</script>	
 					<?php endif; ?>
