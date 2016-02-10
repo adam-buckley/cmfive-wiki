@@ -1,6 +1,5 @@
 <form id="wikieditform" action="/wiki/edit/<?php echo $wiki->name ?>/<?php echo $page->name ?>" method="POST" target="_self" class=" small-12 columns">
 <input type="hidden" name="wikieeditform" value="9d23d65bae7144">
-<input type="hidden" name="dt_modified" id="dt_modified" value="<?php echo $wiki->dt_modified ?>" >
 
 	<div class="tabs">
 		<div>
@@ -123,15 +122,19 @@
 					<?php if ($wiki->type=="richtext"):?>
 					<script src="/modules/wiki/assets/CSSelector.js" ></script>
 					<script>
-						function my_updateCallBack(content) {
-							$('#viewbody').html(content);
+						function my_updateCallBack(record) {
+							console.log('UPDATE');
+							$('#viewbody').html(record.body);
 						}
-						function my_changeCallBack(content) {
+						function my_changeCallBack() {
 							$('#wikiautosavebuttons').show();
 							$('#wikiautosavebuttons .savebutton').show();
 							$('#wikiautosavebuttons .savedbutton').hide();
 						}
-						function my_saveCallBack(content) {
+						function my_saveCallBack(record) {
+							console.log('SAVE');
+							console.log(record);
+							$('#viewbody').html(record.body);
 							$('#wikiautosavebuttons .savebutton').hide();
 							$('#wikiautosavebuttons .savedbutton').show();
 						}
@@ -139,17 +142,33 @@
 							CKEDITOR.plugins.addExternal( 'wikipage', '/modules/wiki/assets/ckeditorplugins/wikipage/','plugin.js','' );
 							CKEDITOR.plugins.addExternal( 'liveedit', '/modules/wiki/assets/ckeditorplugins/liveedit/','plugin.js','' );
 							CKEDITOR.config.extraPlugins = 'wikipage,liveedit';
-						
-							$('#body').each(function(){
-								CKEDITOR.replace(this,{
-									lastModified: '<?php echo $page->dt_modified ?>',
-									pollUrl: '/wiki/ajaxpollpage/<?php echo $wiki->name?>/<?php echo $page->name; ?>/',
-									saveUrl: '/wiki/ajaxsavepage/<?php echo $wiki->name?>/<?php echo $page->name; ?>/',
-									updateCallBack: 'my_updateCallBack',
-									changeCallBack: 'my_changeCallBack',
-									saveCallBack: 'my_saveCallBack',
-									saveTimeOut: 5000,
-									pollTimeOut: 3000,
+							/*************************************************
+							 * AUTH TOKEN
+							 *************************************************/
+							$.ajax(
+								"/rest/token?apikey=<?php echo Config::get("system.rest_api_key") ?>",
+								{
+									cache: false,
+									dataType: "json"
+								}
+								
+							/*************************************************
+							 * NOW CREATE EDITOR
+							 *************************************************/
+							).done(function(token) {
+								$('#body').each(function(){
+									CKEDITOR.replace(this,{
+										lastModified: '<?php echo $page->dt_modified ?>',
+										pollUrl: '/rest/index/WikiPage/id___equal/<?php echo $page->id; ?>/dt_modified___greater/',
+										saveUrl: '/rest/save/WikiPage/',
+										updateCallBack: 'my_updateCallBack',
+										changeCallBack: 'my_changeCallBack',
+										saveCallBack: 'my_saveCallBack',
+										saveTimeOut: 2000,
+										pollTimeOut: 3000,
+										requestParameters: 'token=' + token.success ,
+										saveData : {"id": "<?php echo $page->id ?>" }
+									});
 								});
 							});
 						});
