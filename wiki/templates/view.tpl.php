@@ -24,6 +24,10 @@
 				
 				<span id="wikiautosavebuttons" style="float:right; display: none;" ><button class="button tiny tiny button savedbutton" disabled="true" type="submit">Saved</button><button class="button tiny tiny button savebutton" disabled="true" type="submit">Saving</button></span>
 
+				<?php echo $w->partial('listTags',['object' => $wiki], 'tag'); ?>
+				<?php echo $w->Favorite->getFavoriteButton($wiki);?>
+                        
+
 			</div>
 			
 		</div>
@@ -105,17 +109,46 @@
 						<link rel="stylesheet" href="/modules/wiki/assets/css/font-awesome.min.css">
 						<link rel="stylesheet" href="/modules/wiki/assets/simplemde.min.css">
 						<script src="/modules/wiki/assets/simplemde.min.js"></script>
-						
+						<script src="/modules/wiki/assets/simplemde.liveedit.js"></script>
 						<script>
 							$(document).ready(function() {
-								var simplemde = new SimpleMDE({
-									element: document.getElementById("body"),
-									spellChecker: false,
+								/*************************************************
+								 * AUTH TOKEN
+								 *************************************************/
+								$.ajax(
+									"/rest/token?apikey=<?php echo Config::get("system.rest_api_key") ?>",
+									{
+										cache: false,
+										dataType: "json"
+									}
+									
+								/*************************************************
+								 * NOW CREATE EDITOR
+								 *************************************************/
+								).done(function(token) {
+									var simplemde = new SimpleMDE({
+										element: document.getElementById("body"),
+										spellChecker: false,
+									});
+									simplemde.config={
+										lastModified: '<?php echo $page->dt_modified ?>',
+										pollUrl: '/rest/index/WikiPage/id___equal/<?php echo $page->id; ?>/dt_modified___greater/',
+										saveUrl: '/rest/save/WikiPage/',
+										updateCallBack: 'my_updateCallBack',
+										changeCallBack: 'my_changeCallBack',
+										saveCallBack: 'my_saveCallBack',
+										saveTimeOut: 2000,
+										pollTimeOut: 3000,
+										requestParameters: 'token=' + token.success ,
+										saveData : {"id": "<?php echo $page->id ?>" }
+										
+										
+									};
+									//SimpleMde_BindLiveEditing(simplemde);
+									//simplemde.codemirror.on("change", function(){
+									//	$('#wikibuttons').show();
+									//});
 								});
-								simplemde.codemirror.on("change", function(){
-									$('#wikibuttons').show();
-								});
-
 							});
 						</script>
 					<?php endif; ?>

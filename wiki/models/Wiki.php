@@ -29,19 +29,7 @@ class Wiki extends DbObject{
 		return $this->_db->sql($sql)->fetch_all();
 	}
 	
-	/*****************************
-	 * Load history entries for this wiki with results limited
-	 * @return array 
-	*****************************/
-	function getRecentHistory($limit=1) {
-		$sql="
-		SELECT DISTINCT name, creator_id, unix_timestamp(dt_created) dt_created
-		FROM wiki_page_history
-		WHERE wiki_id = ".$this->id." order by dt_created desc, name asc 
-		limit ".$limit;
-		$result=$this->_db->sql($sql)->fetch_all();
-		return $result;
-	}
+
 	
 	
 	/*****************************
@@ -271,5 +259,15 @@ class Wiki extends DbObject{
 		parent::delete($force);
 	}
 	
-	
+	  function printSearchTitle() {
+        return $this->title;
+    }
+
+    function printSearchListing() {
+       return '';
+    }
+
+    function printSearchUrl() {
+        return "wiki/view/" . $this->name;
+    }
 }

@@ -126,7 +126,7 @@ CKEDITOR.plugins.add( 'liveedit', {
 										data.body=body;
 										$.ajax(
 											editor.config.saveUrl  + "?" + editor.config.requestParameters,
-											{data:data,dataType:'json',cache:false}
+											{data:data,dataType:'json',cache:false,method:'POST'}
 										).done(
 											function(response) {
 												if (response.success && response.success.id) {

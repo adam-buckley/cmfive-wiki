@@ -31,6 +31,15 @@ class WikiPage extends DbObject {
 		return $this->getObjects("WikiPageHistory",array("wiki_page_id"=>$this->id));
 	}
 	
+	/*****************************
+	 * Load history entries for this wiki with results limited
+	 * @return array 
+	*****************************/
+	function getRecentHistory($limit=1) {
+		return $this->getObjects("WikiPageHistory",array("wiki_id"=>$this->wiki_id,"wiki_page_id"=>$this->id),false,true,'dt_created desc,name asc',null,$limit);
+	}
+	
+	
 	function canView(User $user) {
 		return $this->canList($user);
 	}
@@ -49,31 +58,37 @@ class WikiPage extends DbObject {
 	function printSearchUrl() {
 		return "wiki/view/".$this->getWiki()->name."/".$this->name;
 	}
-	
+	/*********************************************************
+	 * Update a wiki page and create wiki page history entries
+	 *********************************************************/
 	function update($force_null_values = false, $force_validation = false) {
-		// protect against ajax history spamming
-		$h= $this->getWiki()->getRecentHistory(2);
-		// diff first two histories (as stable timezones)
-		if (count($h)>1)  {
-			$ts=$h[1]['dt_created'];
-			$now=$h[0]['dt_created'];
-			// if gap between last two histories is less that 2 minutes
-			if ((($now - $ts) > 120)) {
+		// only update if the body has changed
+		$oldRecord=$this->getObject('WikiPage',$this->id,false);
+		if (trim($oldRecord->body) != trim($this->body)) {
+			$h= $this->getRecentHistory(1);
+			parent::update();
+			// protect against ajax history spamming by diff page vs history save dates
+			// if there are history entries
+			if (count($h)>0)  {
+				// if gap between page save right now and last history is less that 1 minute dont add a history entry
+				$historyUpdated=$h[0]->dt_modified;
+				if ((($this->dt_modified - $historyUpdated) > 60)) {
+					$hist = new WikiPageHistory($this->w);
+					$hist->fill($this->toArray());
+					$hist->id = null;
+					$hist->wiki_page_id = $this->id;
+					$hist->insert();
+				}
+			// otherwise need to create first entry
+			} else {
 				$hist = new WikiPageHistory($this->w);
 				$hist->fill($this->toArray());
 				$hist->id = null;
 				$hist->wiki_page_id = $this->id;
 				$hist->insert();
 			}
-		// need to create first two entries
-		} else {
-			$hist = new WikiPageHistory($this->w);
-			$hist->fill($this->toArray());
-			$hist->id = null;
-			$hist->wiki_page_id = $this->id;
-			$hist->insert();
+			
 		}
-		parent::update();
 	}
 
 	function insert($force_validation = false) {

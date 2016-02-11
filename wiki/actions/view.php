@@ -11,6 +11,9 @@ function view_GET(Web &$w) {
 		
 		// Get wiki object and check for existance
 		$wiki = $w->Wiki->getWikiByName($pm['wikiname']);
+		    // Register for timelog
+		$w->Timelog->registerTrackingObject($wiki);
+		
 		if (empty($wiki->id)) {
 			$w->error("Wiki does not exist.");
 		}
