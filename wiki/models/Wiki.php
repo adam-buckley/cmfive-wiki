@@ -22,15 +22,12 @@ class Wiki extends DbObject{
 	*****************************/
 	function getHistory() {
 		$sql="
-		SELECT DISTINCT name, creator_id, dt_created
+		SELECT DISTINCT name, creator_id, unix_timestamp(dt_created) as dt_created,id
 		FROM wiki_page_history
 		WHERE wiki_id = ".$this->id." order by dt_created desc, name asc";
 		
 		return $this->_db->sql($sql)->fetch_all();
 	}
-	
-
-	
 	
 	/*****************************
 	 * Load all page for this wiki
@@ -110,22 +107,6 @@ class Wiki extends DbObject{
 	}
 
 	/*****************************
-	 * Update wiki page for this wiki
-	 * based on it's name.
-	 * @return array 
-	*****************************/
-	function updatePage($name,$body) {
-		$p = $this->getPage($name);
-		if ($p) {
-			$p->body = $body;
-			$p->update();
-			$this->last_modified_page_id = $p->id;
-			$this->update();
-		}
-		return $p;
-	}
-
-	/*****************************
 	 * Create a new wiki page in the database for this wiki
 	 * @return array 
 	*****************************/
@@ -158,7 +139,9 @@ class Wiki extends DbObject{
 	*****************************/
 	function canRead(User $user) {
 		$wu = $this->getObject("WikiUser",array("user_id"=>$user->id,"wiki_id"=>$this->id));
-		$ret=(	$this->Auth->user()->is_admin || 
+		$ret=(	
+			$this->Auth->user()->is_admin || 
+			$this->is_public ||
 			(	$wu != null && 
 				($this->isOwner($user) || $wu->role == "reader" || $wu->role == "editor")
 			)

@@ -1,5 +1,7 @@
 <?php
-
+/*********************************************
+ * Save POST updates to body field into WikiPage
+ *********************************************/
 function edit_POST(Web &$w) {
 	try {
 		$pm = $w->pathMatch("wikiname","pagename");
@@ -11,7 +13,8 @@ function edit_POST(Web &$w) {
 		if (!$wp) {
 			$w->error("Page does not exist.");
 		}
-		$wiki->updatePage($pm['pagename'],$w->request("body"));
+		$wp->body=$w->request("body");
+		$wp->update();
 		$w->msg("Page updated.","/wiki/view/".$pm['wikiname']."/".$pm['pagename']);
 	} catch (WikiException $ex) {
 		$w->error($ex->getMessage(),"/wiki");

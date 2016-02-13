@@ -1,5 +1,4 @@
 <?php
-
 Config::set('wiki', array(
     'version' => '0.8.0',		
     'active' => true,
@@ -8,7 +7,8 @@ Config::set('wiki', array(
     'search' => array("Wiki Pages" => "WikiPage"),
     'dependencies' => array(
         'cebe/markdown' => '~1.0.1'
-    )
+    ),
+    'liveedit' => true
 ));
 // enable WikiPage in rest module
 $restAllow=Config::get('system.rest_allow');

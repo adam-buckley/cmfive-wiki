@@ -3,6 +3,7 @@ $wikiCount=0;
 if (!empty($wikis)) {
 	$table[]=array(
 		"Wiki Title",
+		"Type",
 		"Date Created",
 		"Last Modified Date",
 		"Modified By",
@@ -20,6 +21,7 @@ if (!empty($wikis)) {
 				$wuser = $w->Auth->getUser($p->modifier_id);
 				$table[] = array(
 					Html::a(WEBROOT."/wiki/view/".urlencode($wi->name)."/HomePage","<b>".$wi->title."</b>"),
+					$wi->type,
 					formatDateTime(0 + $wi->dt_created), 
 					formatDateTime(0 + $p->dt_modified), 
 					empty($wuser) ? '' : $w->Auth->getUser($p->modifier_id)->getFullName(),

@@ -26,7 +26,7 @@ class WikiService extends DbService {
 		$wiki = $this->getObject("Wiki",array("name"=>$name));
 		if (!$wiki) return null;
 		
-		if ($wiki->is_public || $wiki->canRead($this->w->Auth->user())) {
+		if ($wiki->canRead($this->w->Auth->user())) {
 			return $wiki;
 		} else {
 			throw new WikiNoAccessException("You have no access to this wiki.");
@@ -48,9 +48,14 @@ class WikiService extends DbService {
 			}
 			// load wikis this user is associated with
 			foreach ($wus as $wu) {
-				$wikis[] = $this->getObject("Wiki",$wu->wiki_id);
-			}  
-			return $wikis;
+				$wikis[$wu->wiki_id] = $this->getObject("Wiki",$wu->wiki_id);
+			} 
+			// also load public wikis 
+			$public=$this->getObjects("Wiki",['is_public'=>true]);
+			foreach ($public as $publicWiki) {
+				$wikis[$publicWiki->id]=$publicWiki;
+			}
+			return array_values($wikis);
 		}
 	}
 	
