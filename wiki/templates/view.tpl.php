@@ -71,9 +71,7 @@
 						$table[] = array("Date", "Page", "User");
 						foreach($wiki_hist as $wh) {
 							$table[]=array(
-								//formatDateTime($w->Wiki->time2Dt(
 								formatDateTime($wh["dt_created"]),
-								//)),
 								Html::a(WEBROOT."/wiki/viewhistoryversion/".$wiki->name."/".$wh['name']."/".$wh['id'],"<b>".$wh['name']."</b>"),
 								$w->Auth->getUser($wh['creator_id'])->getFullName()
 							);
@@ -110,6 +108,8 @@
 				<script>
 					function my_updateCallBack(record) {
 						$('#viewbody').html(record.body);
+						$('#page-history').load('<?php echo WEBROOT."/wiki/pagehistory/".$wiki->name."/".$page->name ?>');
+						$('#wiki-history').load('<?php echo WEBROOT."/wiki/history/".$wiki->name."/".$page->name ?>');
 					}
 					function my_changeCallBack() {
 						$('#wikiautosavebuttons').show();
@@ -120,6 +120,8 @@
 						$('#viewbody').html(record.body);
 						$('#wikiautosavebuttons .savebutton').hide();
 						$('#wikiautosavebuttons .savedbutton').show();
+						$('#page-history').load('<?php echo WEBROOT."/wiki/pagehistory/".$wiki->name."/".$page->name ?>');
+						$('#wiki-history').load('<?php echo WEBROOT."/wiki/history/".$wiki->name."/".$page->name ?>');
 					}
 				</script>
 					<?php if ($wiki->type=="markdown"):?>

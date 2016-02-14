@@ -1,6 +1,8 @@
 <?php
 
 function history_GET(Web &$w) {
+	// AJAX ENDPOINT
+	$w->setLayout(null);
     try {
 		$pm = $w->pathMatch("wikiname", "pagename");
 		

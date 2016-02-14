@@ -1,28 +1,16 @@
-<div class="tabs">
-    <div class="tab-head">
-        <a href="<?php echo WEBROOT."/wiki/view/".$wiki->name."/".$pagename; ?>" >Back</a>
-        <a href="#" class="active" >Wiki History</a>        
-    </div>
-    <div class="tab-body">
-        <div id="tab-1">
-        	<?php 
-        	if ($hist){
-	        	$table[]=array(
-				"Date",
-				"Page",
-				"User");
-				foreach($hist as $wh) {
-					$table[]=array(
-    					formatDate($wh["dt_created"]),
-    					Html::a(WEBROOT."/wiki/view/".$wiki->name."/".$wh['name'],"<b>".$wh['name']."</b>"),
-    					$w->Auth->getUser($wh['creator_id'])->getFullName()
-					);
-				}
-				echo Html::table($table,"history","tablesorter",true);
-        	} else {
-        		echo "No changes yet.";
-        	}
-			?>
-        </div>
-    </div>
-</div>
+<?php 
+$table = array();
+if (!empty($hist)){
+		$table[] = array("Date", "Page", "User");
+		foreach($hist as $wh) {
+			$table[]=array(
+				formatDateTime($wh["dt_created"]),
+				Html::a(WEBROOT."/wiki/viewhistoryversion/".$wiki->name."/".$wh['name']."/".$wh['id'],"<b>".$wh['name']."</b>"),
+				$w->Auth->getUser($wh['creator_id'])->getFullName()
+			);
+		}
+		echo Html::table($table,"history","tablesorter",true);
+} else {
+		echo "No changes yet.";
+}
+?>
