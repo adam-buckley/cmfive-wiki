@@ -5,7 +5,7 @@ if (!empty($hist)){
 		foreach($hist as $wh) {
 			$table[]=array(
 				formatDateTime($wh["dt_created"]),
-				Html::a(WEBROOT."/wiki/viewhistoryversion/".$wiki->name."/".$wh['name']."/".$wh['id'],"<b>".$wh['name']."</b>"),
+				Html::a(WEBROOT."/wiki/viewhistoryversion/".$wiki->name."/".$page->name."/".$wh['id'],"<b>".$page->name."</b>"),
 				$w->Auth->getUser($wh['creator_id'])->getFullName()
 			);
 		}
