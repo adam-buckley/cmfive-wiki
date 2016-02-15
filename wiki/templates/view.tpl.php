@@ -106,8 +106,14 @@
 			
 			<?php if ($wiki->canEdit($w->Auth->user())):?>
 				<script>
+					// into global scope to facilitate testing
+					var simplemde;
 					function my_updateCallBack(record) {
-						$('#viewbody').html(record.body);
+						if (simplemde) {
+							$('#viewbody').load('<?php echo WEBROOT."/wiki/preview/".$wiki->name."/".$page->name ?>');
+						} else {
+							$('#viewbody').html(record.body);
+						}
 						$('#page-history').load('<?php echo WEBROOT."/wiki/pagehistory/".$wiki->name."/".$page->name ?>');
 						$('#wiki-history').load('<?php echo WEBROOT."/wiki/history/".$wiki->name."/".$page->name ?>');
 					}
@@ -117,7 +123,11 @@
 						$('#wikiautosavebuttons .savedbutton').hide();
 					}
 					function my_saveCallBack(record) {
-						$('#viewbody').html(record.body);
+						if (simplemde) {
+							$('#viewbody').load('<?php echo WEBROOT."/wiki/preview/".$wiki->name."/".$page->name ?>');
+						} else {
+							$('#viewbody').html(record.body);
+						}
 						$('#wikiautosavebuttons .savebutton').hide();
 						$('#wikiautosavebuttons .savedbutton').show();
 						$('#page-history').load('<?php echo WEBROOT."/wiki/pagehistory/".$wiki->name."/".$page->name ?>');
@@ -146,7 +156,7 @@
 									 * NOW CREATE EDITOR
 									 *************************************************/
 									).done(function(token) {
-										var simplemde = new SimpleMDE({
+										simplemde = new SimpleMDE({
 											element: document.getElementById("body"),
 											spellChecker: false,
 											insertTexts: {
@@ -180,7 +190,7 @@
 						<?php else: ?>	
 							<script>
 							$(document).ready(function() {
-								var simplemde = new SimpleMDE({
+								simplemde = new SimpleMDE({
 									element: document.getElementById("body"),
 									spellChecker: false,
 									insertTexts: {
@@ -246,6 +256,7 @@
 										CKEDITOR.replace(this);
 										
 									});
+									$('#wikibuttons').show();
 									var editor=CKEDITOR.instances.body;
 									editor.on('contentDom', function() {
 										var editable = editor.editable();
@@ -291,7 +302,7 @@
 			
 			<?php if ($wiki->isOwner($w->Auth->user()) && $page->name == "HomePage"):?>
 				<div id="members">
-					<?php echo Html::box(WEBROOT."/wiki/editmember/".$wiki->id, "Add Member", true); ?>
+					<?php echo Html::ab(WEBROOT."/wiki/editmember/".$wiki->id, "Add Member", true); ?>
 					<?php if ($wiki_users): ?>
 						<table class="tablesorter">
 							<thead>
@@ -308,8 +319,8 @@
 										<td><?php echo $mem->role; ?></td>
 										<td>
 											<?php 
-												echo Html::b($webroot."/wiki/editmember/".$wiki->id."/".$mem->id, "Edit");
-												echo Html::b($webroot."/wiki/delmember/".$wiki->id."/".$mem->id,"Delete"); 
+												echo Html::ab($webroot."/wiki/editmember/".$wiki->id."/".$mem->id, "Edit","editbutton")."&nbsp;&nbsp;&nbsp;";
+												echo Html::ab($webroot."/wiki/delmember/".$wiki->id."/".$mem->id,"Delete","deletebutton"); 
 											?>
 										</td>
 									</tr>

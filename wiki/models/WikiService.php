@@ -37,6 +37,14 @@ class WikiService extends DbService {
 	 * @return array of Wiki or null
 	*****************************/
 	function getWikis() {
+		$wikis=$this->getObjects("Wiki",array("is_deleted" => 0));
+		foreach ($wikis as $wiki) {
+			if ($wiki->canRead($this->w->Auth->user())) {
+				$ret[]=$wiki;
+			}
+		}
+		return $ret;
+		/*
 		// admin is allowed access to all records
 		if ($this->w->Auth->user()->is_admin) {
 			return $this->getObjects("Wiki",array("is_deleted" => 0));
@@ -55,8 +63,13 @@ class WikiService extends DbService {
 			foreach ($public as $publicWiki) {
 				$wikis[$publicWiki->id]=$publicWiki;
 			}
+			// also load wikis owned by login user
+			$public=$this->getObjects("Wiki",['owner_id'=>$this->w->Auth->user()->id]);
+			foreach ($public as $publicWiki) {
+				$wikis[$publicWiki->id]=$publicWiki;
+			}
 			return array_values($wikis);
-		}
+		}*/
 	}
 	
 	/*****************************

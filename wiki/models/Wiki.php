@@ -122,7 +122,7 @@ class Wiki extends DbObject{
 	}
 
 	/*****************************
-	 * Load all wiki user associations for this wikie
+	 * Load all wiki user associations for this wiki
 	 * @return array 
 	*****************************/
 	function getUsers() {
@@ -140,11 +140,10 @@ class Wiki extends DbObject{
 	function canRead(User $user) {
 		$wu = $this->getObject("WikiUser",array("user_id"=>$user->id,"wiki_id"=>$this->id));
 		$ret=(	
-			$this->Auth->user()->is_admin || 
+			$user->is_admin || 
 			$this->is_public ||
-			(	$wu != null && 
-				($this->isOwner($user) || $wu->role == "reader" || $wu->role == "editor")
-			)
+			$this->isOwner($user) ||
+			($wu != null && ($wu->role == "reader" || $wu->role == "editor"))
 		);
 		return $ret;
 	}
@@ -154,8 +153,8 @@ class Wiki extends DbObject{
 	 * @return boolean 
 	*****************************/	
 	function canEdit(User $user) {
-		$wu = $this->getObject("WikiUser",array("user_id"=>$user->id,"wiki_id"=>$this->id));
-		return $this->Auth->user()->is_admin ||($wu != null && ($this->isOwner($user)  || $wu->role == "editor"));
+		$wu = $this->getObject("WikiUser",array("user_id"=>$user->id,"wiki_id"=>$this->id,"role"=>"editor"));
+		return $this->Auth->user()->is_admin ||$this->isOwner($user)  || ($wu != null && $wu->role == "editor");
 	}
 
 	/*****************************
