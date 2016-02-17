@@ -138,36 +138,41 @@ class WikiPage extends DbObject {
 		$wiki=$this->getWiki();
 		// only update if the body has changed
 		$response=false;
-		$oldRecord=$this->getObject('WikiPage',$this->id,false);
-		if (trim($oldRecord->body) != trim($this->body)) {
-			$this->body=$this->replaceWikiPageLinks($this->body);
-			// protect against ajax history spamming by diff page vs history save dates
-			$h= $this->getRecentHistory(1);
-			$response=parent::update();
-			// if there are history entries
-			if (count($h)>0)  {
-				// if gap between page save right now and last history is less that 1 minute dont add a history entry
-				$historyUpdated=$h[0]->dt_modified;
-				if ((($this->dt_modified - $historyUpdated) > 60)) {
+		$oldRecord=$this->getObjects('WikiPage',['id'=>$this->id]);
+		if (is_array($oldRecord) && count($oldRecord)>0) {
+			$oldRecord=$oldRecord[0];
+		}
+		if (!empty($oldRecord)) {
+			if (trim($oldRecord->body) != trim($this->body)) {
+				$this->body=$this->replaceWikiPageLinks($this->body);
+				// protect against ajax history spamming by diff page vs history save dates
+				$h= $this->getRecentHistory(1);
+				$response=parent::update();
+				// if there are history entries
+				if (count($h)>0)  {
+					// if gap between page save right now and last history is less that 1 minute dont add a history entry
+					$historyUpdated=$h[0]->dt_modified;
+					if ((($oldRecord->dt_modified - $historyUpdated) > 60)) {
+						$hist = new WikiPageHistory($this->w);
+						$hist->fill($this->toArray());
+						$hist->id = null;
+						$hist->wiki_page_id = $this->id;
+						$hist->insert();
+					}
+				// otherwise need to create first entry
+				} else {
 					$hist = new WikiPageHistory($this->w);
 					$hist->fill($this->toArray());
 					$hist->id = null;
 					$hist->wiki_page_id = $this->id;
 					$hist->insert();
 				}
-			// otherwise need to create first entry
+				// update wiki $last_modified_page_id (replace wiki->updatePage)
+				$wiki->last_modified_page_id=$this->id;
+				$wiki->update();
 			} else {
-				$hist = new WikiPageHistory($this->w);
-				$hist->fill($this->toArray());
-				$hist->id = null;
-				$hist->wiki_page_id = $this->id;
-				$hist->insert();
+				return true;
 			}
-			// update wiki $last_modified_page_id (replace wiki->updatePage)
-			$wiki->last_modified_page_id=$this->id;
-			$wiki->update();
-		} else {
-			return true;
 		}
 		return $response;
 	}

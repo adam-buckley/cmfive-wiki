@@ -24,8 +24,8 @@
 				
 				<span id="wikiautosavebuttons" style="float:right; display: none;" ><button class="button tiny tiny button savedbutton" disabled="true" type="submit">Saved</button><button class="button tiny tiny button savebutton" disabled="true" type="submit">Saving</button></span>
 
-				<?php echo $w->partial('listTags',['object' => $wiki], 'tag'); ?>
-				<?php echo $w->Favorite->getFavoriteButton($wiki);?>
+				<?php echo $w->partial('listTags',['object' => $page], 'tag'); ?>
+				<?php echo $w->Favorite->getFavoriteButton($page);?>
                         
 
 			</div>
@@ -66,6 +66,8 @@
 			
 			<div id="wiki-history">
 				<?php 
+				
+				
 				$table = array();
 				if (!empty($wiki_hist)){
 						$table[] = array("Date", "Page", "User");
@@ -91,9 +93,9 @@
 						$table[]=array("Date", "User", "Action");
 						foreach($page_hist as $ph) {
 							$table[]=array(
-								$ph->getDateTime("dt_created","d/m/Y H:i"),
+								formatDateTime($ph->dt_created),
 								$w->Auth->getUser($ph->creator_id)->getFullName(),
-								Html::ab(WEBROOT."/wiki/viewhistoryversion/".$wiki->name."/".$wh['name']."/".$ph->id,"View",true),
+								Html::a(WEBROOT."/wiki/viewhistoryversion/".$wiki->name."/".$wh['name']."/".$ph->id,"View",true),
 							);
 						}
 						echo Html::table($table,"history","tablesorter",true);
@@ -303,7 +305,7 @@
 			<?php if ($wiki->isOwner($w->Auth->user()) && $page->name == "HomePage"):?>
 				<div id="members">
 					<?php echo Html::ab(WEBROOT."/wiki/editmember/".$wiki->id, "Add Member", true); ?>
-					<?php if ($wiki_users): ?>
+					<?php if (!empty($wiki_users)): ?>
 						<table class="tablesorter">
 							<thead>
 								<tr>

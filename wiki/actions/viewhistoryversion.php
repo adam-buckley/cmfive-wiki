@@ -39,6 +39,12 @@ function viewhistoryversion_POST(Web &$w) {
 		if (!$wikiHistory)  {
 			$w->error('No such history item');
 		}
+		// force create history entry when reloading historic version
+		$hist = new WikiPageHistory($w);
+		$hist->fill($wp->toArray());
+		$hist->id = null;
+		$hist->wiki_page_id = $wp->id;
+		$hist->insert();
 		// override body with history version
 		$wp->body=$wikiHistory->body;
 		$wp->update();

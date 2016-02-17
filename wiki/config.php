@@ -11,10 +11,6 @@ Config::set('wiki', array(
     'liveedit' => true
 ));
 // enable WikiPage in rest module
-$restAllow=Config::get('system.rest_allow');
-if (!is_array($restAllow))  {
-	$restAllow=[];
-}
-Config::set('system.rest_allow',array_merge($restAllow, array("WikiPage")));
+Config::append('system.rest_allow',array("WikiPage"));
 
 

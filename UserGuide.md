@@ -5,14 +5,14 @@
 
 Any user with access to the wiki module can create a wiki. Click the create button or use the menu item to create a new wiki.
 If you select the public checkbox, the wiki will be visible (but not editable) by anyone with access to the module.
-The type selector determines how pages in the wiki will be edited. Rich text is more familiar to most users. Markdown offers an editor more oriented to power users.
+The type selector determines how pages in the wiki will be edited. Rich text is more familiar to most users. Markdown offers an editor more oriented to power users. For more details on the Markdown format see [Markdown](https://daringfireball.net/projects/markdown/syntax)
+
 
 ![](https://raw.githubusercontent.com/2pisoftware/cmfive-wiki/wikiLiveSave/wiki/doc/images/wiki_no_wikis_yet.png)  ===>>  
 ![](https://raw.githubusercontent.com/2pisoftware/cmfive-wiki/wikiLiveSave/wiki/doc/images/wiki_create_wiki.png)
 
 
 Click the edit tab to make updates to the Home page of the new wiki. 
-
 ![](https://raw.githubusercontent.com/2pisoftware/cmfive-wiki/wikiLiveSave/wiki/doc/images/wiki_created.png)
 
 
@@ -31,6 +31,8 @@ Wiki words surrounded by double square brackets can be used as a shortcut to cre
 ![](https://raw.githubusercontent.com/2pisoftware/cmfive-wiki/wikiLiveSave/wiki/doc/images/wiki_word_linked.png)
 
 Alternatively, the RTE toolbar offers a create page button.
+
+
 
 ## Show My Wikis
 The wiki home page is accessible from the menu and lists all wikis that the logged in user has access to. Click the title of the wiki to see its Home page.
