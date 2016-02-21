@@ -54,7 +54,7 @@
 				</div>
 				<hr/>
 				<div id="viewattachments">
-				<?php echo $w->partial("listattachments", array("object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"), "file"); ?>
+				<?php echo $w->partial("listattachmentsplain", array("object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"), "file"); ?>
 				</div>
 				<script>
 					$(document).ready(function() {
@@ -291,7 +291,7 @@
 					<?php echo $editForm; ?>
 
 					<div id="editattachments">
-					<?php echo $w->partial("listattachments", array("object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"), "file"); ?>
+					<?php echo $w->partial("listattachmentsplain", array("object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"), "file"); ?>
 					</div>
 					<script>
 					$(document).ready(function() {

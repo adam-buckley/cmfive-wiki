@@ -107,9 +107,9 @@ class WikiPage extends DbObject {
 			if ($this->isWikiWord($title)) {
 				$link="";
 				if ($this->getWiki()->type=="richtext") {
-					$link="<a class='wikiwordlink wikiwordlink-".$title."' href='".WEBROOT . implode("/",array_slice($urlParts,0,count($urlParts)-1))."/".$title."' >".$title."</a>";
+					$link="<a class='wikiwordlink wikiwordlink-".$title."' href='".WEBROOT .'/'. implode("/",array_slice($urlParts,0,count($urlParts)-1))."/".$title."' >".$title."</a>";
 				} else if ($this->getWiki()->type=="markdown") {
-					$link="[".$title."](".WEBROOT . implode("/",array_slice($urlParts,0,count($urlParts)-1))."/".$title.")";
+					$link="[".$title."](".WEBROOT .'/'. implode("/",array_slice($urlParts,0,count($urlParts)-1))."/".$title.")";
 				} else {
 					$link=$title;
 				}
