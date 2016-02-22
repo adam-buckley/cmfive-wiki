@@ -19,6 +19,12 @@
 				<?php if ($w->Auth->hasRole('file_upload') && $w->Auth->hasRole('file_download')):?>
 				<a href="#attachments">Attachments</a>
 				<?php endif; ?>
+				<?php 
+					$tab_headers= $w->callHook('core_template', 'tab_headers', $page);  
+					if (!empty($tab_headers)) {
+						echo implode('', $tab_headers);
+					}
+				?>
 				<!--span style="float:right;"><button class="button tiny " onclick="modal_history.push(&quot;/wiki/markup?isbox=1&quot;); $(&quot;#cmfive-modal&quot;).foundation(&quot;reveal&quot;, &quot;open&quot;, &quot;/wiki/markup?isbox=1&quot;);return false;">Markup Help</button></span-->
 				<span id="wikibuttons" style="float:right; display: none;" ><button class="button tiny button savebutton" type="submit">Save</button><button class="button tiny tiny button cancelbutton" style="margin-right: 2em;" type="button" onclick="if($('#cmfive-modal').is(':visible')){ $('#cmfive-modal').foundation('reveal', 'close'); } else { window.history.back(); }">Cancel</button></span>
 				
@@ -342,6 +348,12 @@
 			<?php echo $w->partial("listattachments", array("object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"), "file"); ?>
 			</div>
 			<?php endif; ?>
+			<?php 
+				$tab_content = $w->callHook('core_template', 'tab_content', ['object' => $page, 'redirect_url' => "/wiki/view/{$wiki->name}/{$page->name}"]); 
+				if (!empty($tab_content)) {
+					echo implode('', $tab_content);
+				}
+			?>
 		</div>
 	</div>
 
