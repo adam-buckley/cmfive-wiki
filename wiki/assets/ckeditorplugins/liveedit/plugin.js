@@ -81,10 +81,14 @@ CKEDITOR.plugins.add( 'liveedit', {
 			if (range) {
 				var startPath=CSSelector(range.startContainer.$);
 				var startPathParts=startPath.split('>');
-				startPath=startPathParts.slice(0,startPathParts.length-1).join('>');
+				if (startPathParts.length>3) {
+					startPath=startPathParts.slice(0,startPathParts.length-1).join('>');
+				}
 				var endPath=CSSelector(range.startContainer.$);
 				var endPathParts=endPath.split('>');
-				endPath=endPathParts.slice(0,endPathParts.length-1).join('>');
+				if (endPathParts.length>3) {
+					endPath=endPathParts.slice(0,endPathParts.length-1).join('>');
+				}
 				var savedSelection={
 					startPath : startPath,
 					startOffset : range.startOffset,
