@@ -38,12 +38,16 @@ class WikiService extends DbService {
 	*****************************/
 	function getWikis() {
 		$wikis=$this->getObjects("Wiki",array("is_deleted" => 0));
-		foreach ($wikis as $wiki) {
-			if ($wiki->canRead($this->w->Auth->user())) {
-				$ret[]=$wiki;
+		if (!empty($wikis)) {
+			foreach ($wikis as $wiki) {
+				if ($wiki->canRead($this->w->Auth->user())) {
+					$ret[]=$wiki;
+				}
 			}
+			return $ret;
+		} else {
+			return null;
 		}
-		return $ret;
 		/*
 		// admin is allowed access to all records
 		if ($this->w->Auth->user()->is_admin) {
