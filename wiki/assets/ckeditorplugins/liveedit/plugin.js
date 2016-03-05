@@ -81,12 +81,12 @@ CKEDITOR.plugins.add( 'liveedit', {
 			if (range) {
 				var startPath=CSSelector(range.startContainer.$);
 				var startPathParts=startPath.split('>');
-				if (startPathParts.length>3) {
+				if (range.startContainer.$.nodeType ==3 ) {
 					startPath=startPathParts.slice(0,startPathParts.length-1).join('>');
 				}
 				var endPath=CSSelector(range.startContainer.$);
 				var endPathParts=endPath.split('>');
-				if (endPathParts.length>3) {
+				if (range.endContainer.$.nodeType ==3 ) {
 					endPath=endPathParts.slice(0,endPathParts.length-1).join('>');
 				}
 				var savedSelection={
@@ -96,7 +96,7 @@ CKEDITOR.plugins.add( 'liveedit', {
 					endOffset : range.endOffset
 				
 				};
-				// modify text
+				// modify texts
 				editor.setData(record.body);
 				lastModified=record.dt_modified;
 				callUpdateCallBack(record);
@@ -232,7 +232,3 @@ CKEDITOR.plugins.add( 'liveedit', {
 
     }
 });
-
-
-
-
