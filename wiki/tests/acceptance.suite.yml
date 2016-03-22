@@ -4,9 +4,6 @@ modules:
     - WebDriver:
         url:
         wait: 1
-        browser: chrome
-        host: selenium
-        http_proxy: direct
     - \Helper\Acceptance
     - \Helper\CmFiveTestHelper
     - Asserts
