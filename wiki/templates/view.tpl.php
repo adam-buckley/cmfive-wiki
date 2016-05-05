@@ -223,8 +223,8 @@
 									CKEDITOR.plugins.addExternal( 'wikipage', '/modules/wiki/assets/ckeditorplugins/wikipage/','plugin.js','' );
 									CKEDITOR.plugins.addExternal( 'liveedit', '/modules/wiki/assets/ckeditorplugins/liveedit/','plugin.js','' );
 									CKEDITOR.plugins.addExternal( 'maximize', '/modules/wiki/assets/ckeditorplugins/maximize/','plugin.js','' );
-									CKEDITOR.plugins.addExternal( 'autogrow', '/modules/wiki/assets/ckeditorplugins/autogrow/','plugin.js','' );
-									CKEDITOR.config.extraPlugins = 'wikipage,liveedit,maximize,autogrow';
+									//CKEDITOR.plugins.addExternal( 'autogrow', '/modules/wiki/assets/ckeditorplugins/autogrow/','plugin.js','' );
+									CKEDITOR.config.extraPlugins = 'wikipage,liveedit,maximize'; //,autogrow
 									/*************************************************
 									 * AUTH TOKEN
 									 *************************************************/
@@ -260,9 +260,9 @@
 							<script>
 								$(document).ready(function() {
 									CKEDITOR.plugins.addExternal( 'wikipage', '/modules/wiki/assets/ckeditorplugins/wikipage/','plugin.js','' );
-									CKEDITOR.plugins.addExternal( 'maximize', '/modules/wiki/assets/ckeditorplugins/autogrow/','plugin.js','' );
-									CKEDITOR.plugins.addExternal( 'autogrow', '/modules/wiki/assets/ckeditorplugins/maximize/','plugin.js','' );
-									CKEDITOR.config.extraPlugins = 'wikipage,autogrow,maximize';
+									CKEDITOR.plugins.addExternal( 'maximize', '/modules/wiki/assets/ckeditorplugins/maximize/','plugin.js','' );
+									//CKEDITOR.plugins.addExternal( 'autogrow', '/modules/wiki/assets/ckeditorplugins/maximize/','plugin.js','' );
+									CKEDITOR.config.extraPlugins = 'wikipage,maximize'; //autogrow,
 									$('#body').each(function(){
 										CKEDITOR.replace(this);
 										

@@ -147,6 +147,16 @@ class Wiki extends DbObject{
 		);
 		return $ret;
 	}
+	
+	function canList(User $user) {
+	return true;
+	//	return $this->canRead($user);
+	}
+	
+	function canView(User $user) {
+		return $this->canRead($user);
+	}
+
 
 	/*****************************
 	 * Check if a user can edit this record
