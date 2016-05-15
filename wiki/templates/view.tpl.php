@@ -154,7 +154,7 @@
 									 * AUTH TOKEN
 									 *************************************************/
 									$.ajax(
-										"/rest/token?apikey=<?php echo Config::get("system.rest_api_key") ?>",
+										"/rest/token?api=<?php echo Config::get("system.rest_api_key") ?>",
 										{
 											cache: false,
 											dataType: "json"
@@ -229,7 +229,7 @@
 									 * AUTH TOKEN
 									 *************************************************/
 									$.ajax(
-										"/rest/token?apikey=<?php echo Config::get("system.rest_api_key") ?>",
+										"/rest/token?api=<?php echo Config::get("system.rest_api_key") ?>",
 										{
 											cache: false,
 											dataType: "json"
