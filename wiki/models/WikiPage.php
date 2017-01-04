@@ -145,6 +145,7 @@ class WikiPage extends DbObject {
 		if (!empty($oldRecord)) {
 			if (trim($oldRecord->body) != trim($this->body)) {
 				//$this->body=$this->replaceWikiPageLinks($this->body); // this should be done before DISPLAYING the page!
+				$this->body=$body = WikiLib::replaceWikiMacros($wiki,$wp,$body);
 				// protect against ajax history spamming by diff page vs history save dates
 				$h= $this->getRecentHistory(1);
 				$response=parent::update();
@@ -182,6 +183,7 @@ class WikiPage extends DbObject {
 	 * last_modified_page
 	 *********************************************************/
 	function insert($force_validation = false) {
+		$this->body = WikiLib::replaceWikiMacros($wiki,$wp,$this->body);
 		$a=parent::insert();
 		$hist = new WikiPageHistory($this->w);
 		$hist->fill($this->toArray());
