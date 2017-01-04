@@ -1,6 +1,24 @@
 <?php
 
 /**
+ * Wiki Macro
+ *
+ * @@userstamp@@
+ *
+ * @param Web $w
+ * @param Array[wiki:,page:,options:] $params
+ */
+function wiki_wiki_macro_userstamp_do(Web $w, $params) {
+	$wiki = $params['wiki'];
+	$page = $params['page'];
+	if ($wiki->type == "markdown") {
+		return "**".$w->Auth->user()->getFullName().",".date("d/m/Y")."** ";
+	} else {
+		return "<b>".$w->Auth->user()->getFullName().",".date("d/m/Y")."</b>&nbsp;";
+	}
+}
+
+/**
  * Wiki Shortcode
  * 
  * [[page|ThisIsANewPage(|Optional Page Titel)]]

@@ -35,7 +35,7 @@ class WikiInitialMigration extends CmfiveMigration {
 					])->addColumn($column)
 					->addColumn('name', 'string', ['limit' => 255])
 					->addColumn('wiki_id', 'integer' )
-					->addColumn('body', 'string' , ['limit' => 4096])
+					->addColumn('body', 'text' , ['null' => true])
 					->addCmfiveParameters()
 					->create();
 		}
@@ -51,7 +51,7 @@ class WikiInitialMigration extends CmfiveMigration {
 					->addColumn('wiki_page_id', 'integer' )
 					->addColumn('name', 'string', ['limit' => 255])
 					->addColumn('wiki_id', 'integer' )
-					->addColumn('body', 'string', ['limit' => 1024] )
+					->addColumn('body', 'text', ['null' => true] )
 					->addCmfiveParameters()
 					->create();
 		}

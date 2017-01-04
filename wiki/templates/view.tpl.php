@@ -10,7 +10,7 @@
 				<?php if ($wiki->canEdit($w->Auth->user())):?>
 					<a href="#edit">Edit</a>
 				<?php endif; ?>
-				<?php if ($wiki->isOwner($w->Auth->user()) && $page->name == "HomePage"):?>
+				<?php if (($wiki->isOwner($w->Auth->user()) || $w->Auth->user()->is_admin) && $page->name == "HomePage"):?>
 					<a href="#members">Members</a>
 				<?php endif; ?>
 				<?php if ($w->Auth->hasRole('comment')):?>
