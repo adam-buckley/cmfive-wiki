@@ -52,7 +52,7 @@ function view_GET(Web &$w) {
 		} else if ($wiki->type == "markdown") {
 			$body = WikiLib::wiki_format_cebe($wiki, $wp);
 		}
-		$body = $wp->replaceWikiPageLinks($body);
+		$body = $wp->replaceWikiCode($wiki,$wp,$body);
 		
 		$w->ctx("body",$body);
 		$w->ctx("wiki", $wiki);
