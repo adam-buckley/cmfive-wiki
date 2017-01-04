@@ -15,7 +15,7 @@ class WikiLib {
     
     public static function replaceWikiCode($wiki,$page,$text,$prefix="\[\[",$suffix="\]\]") {
     	return preg_replace_callback("/".$prefix."(.*?)((?:\|.*?)*)".$suffix."/", 
-    			function ($matches) {
+    			function ($matches) use ($wiki, $page) {
 			    	$hook = "shortcode_".$matches[1]."_do";
 			    	$params = explode("|", $matches[2]);
 			    	array_shift($params);
