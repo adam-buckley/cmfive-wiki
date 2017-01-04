@@ -6,49 +6,22 @@ class WikiLib {
      * Returns HTML transformed from Markdown markup
      * @param $page
      */
-    static function wiki_format_cebe($wiki, $page) {
+    public static function wiki_format_cebe($wiki, $page) {
 		$parser = new \cebe\markdown\Markdown();
 		$body=$page->body;
         $body = $parser->parse($body);
         return $body;
     }
     
-    /**
-     * Returns HTML transformed from wiki markup
-     * UNUSED
-     * @param $page
-     */
-    static function wiki_format_textile($wiki, $page) {
-        require_once 'textile/classTextile.php';
-        $textile = new Textile();
-        $body = $textile->TextileThis($page->body);
-
-        // replace wiki links
-        $wn = $wiki->name;
-        $body = preg_replace("/\[\[([a-zA-Z0-9]+)\]\]/", "<a href='" . WEBROOT . "/wiki/view/" . $wn . "/\\1'>\\1</a>", $body);
-        return $body;
+    public static function replaceWikiCode($wiki,$page,$text,$prefix="\[\[",$suffix="\]\]") {
+    	return preg_replace_callback("/".$prefix."(.*?)((?:\|.*?)*)".$suffix."/", 
+    			function ($matches) {
+			    	$hook = "shortcode_".$matches[1]."_do";
+			    	$params = explode("|", $matches[2]);
+			    	array_shift($params);
+			    	return $wiki->w->callHook("wiki",$hook,["wiki"=>$wiki,"page"=>$page,"options"=>$params]);
+        		}, $text);
     }
-
-    /**
-     * Returns HTML transformed from wiki markup
-     * UNUSED
-     * @param $page
-     */
-    static function wiki_format_creole($wiki, $page) {
-        require_once 'creole/creole.php';
-        $creole = new creole(
-                array(
-            'link_format' => WEBROOT . "/wiki/view/" . $wiki->name . "/%s",
-            'interwiki' => array(
-                'Wikipedia' => 'http://en.wikipedia.org/wiki/%s'
-            )
-                )
-        );
-
-        $options = null;
-        $body = $creole->parse($page->body);
-
-        return $body;
-    }
-
+    
+    
 }
