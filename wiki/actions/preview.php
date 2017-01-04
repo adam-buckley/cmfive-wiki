@@ -20,7 +20,7 @@ function preview_GET(Web &$w) {
 		} else if ($wiki->type == "markdown") {
 			$body = WikiLib::wiki_format_cebe($wiki, $wp);
 		}
-		$body = $wp->replaceWikiCode($wiki,$wp,$body);
+		$body = WikiLib::replaceWikiCode($wiki,$wp,$body);
 		echo $body;
 		
 		/**
