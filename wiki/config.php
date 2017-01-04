@@ -12,6 +12,12 @@ Config::set('wiki', array(
 	'hooks' => array(
 		'wiki',
 	),
+	'shortcode' => array(
+		'video' => array(
+			'default_width' => 640,
+			'default_height' => 359,
+		)
+	)
 ));
 
 // enable WikiPage in rest module
