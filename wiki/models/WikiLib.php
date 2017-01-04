@@ -19,7 +19,8 @@ class WikiLib {
 			    	$hook = "shortcode_".$matches[1]."_do";
 			    	$params = explode("|", $matches[2]);
 			    	array_shift($params);
-			    	return $wiki->w->callHook("wiki",$hook,["wiki"=>$wiki,"page"=>$page,"options"=>$params]);
+			    	$replacements = $wiki->w->callHook("wiki",$hook,["wiki"=>$wiki,"page"=>$page,"options"=>$params]);
+			    	return empty($replacements) ? "" : implode(" ",$replacements);
         		}, $text);
     }
     
