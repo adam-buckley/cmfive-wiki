@@ -120,7 +120,8 @@
 						if (simplemde) {
 							$('#viewbody').load('<?php echo WEBROOT."/wiki/preview/".$wiki->name."/".$page->name ?>');
 						} else {
-							$('#viewbody').html(record.body);
+							//$('#viewbody').html(record.body);
+							$('#viewbody').load('<?php echo WEBROOT."/wiki/preview/".$wiki->name."/".$page->name ?>');
 						}
 						$('#page-history').load('<?php echo WEBROOT."/wiki/pagehistory/".$wiki->name."/".$page->name ?>');
 						$('#wiki-history').load('<?php echo WEBROOT."/wiki/history/".$wiki->name."/".$page->name ?>');
@@ -134,7 +135,8 @@
 						if (simplemde) {
 							$('#viewbody').load('<?php echo WEBROOT."/wiki/preview/".$wiki->name."/".$page->name ?>');
 						} else {
-							$('#viewbody').html(record.body);
+							//$('#viewbody').html(record.body);
+							$('#viewbody').load('<?php echo WEBROOT."/wiki/preview/".$wiki->name."/".$page->name ?>');
 						}
 						$('#wikiautosavebuttons .savebutton').hide();
 						$('#wikiautosavebuttons .savedbutton').show();
@@ -165,7 +167,7 @@
 									 *************************************************/
 									).done(function(token) {
 										simplemde = new SimpleMDE({
-											element: document.getElementById("body"),
+											element: document.getElementById("wikibody"),
 											spellChecker: false,
 											insertTexts: {
 												link: ["[](", ")"],
@@ -239,7 +241,7 @@
 									 * NOW CREATE EDITOR
 									 *************************************************/
 									).done(function(token) {
-										$('#body').each(function(){
+										$('#wikibody').each(function(){
 											CKEDITOR.replace(this,{
 												lastModified: '<?php echo $page->dt_modified ?>',
 												pollUrl: '/rest/index/WikiPage/id___equal/<?php echo $page->id; ?>/dt_modified___greater/',
@@ -263,7 +265,7 @@
 									CKEDITOR.plugins.addExternal( 'maximize', '/modules/wiki/assets/ckeditorplugins/maximize/','plugin.js','' );
 									//CKEDITOR.plugins.addExternal( 'autogrow', '/modules/wiki/assets/ckeditorplugins/maximize/','plugin.js','' );
 									CKEDITOR.config.extraPlugins = 'wikipage,maximize'; //autogrow,
-									$('#body').each(function(){
+									$('#wikibody').each(function(){
 										CKEDITOR.replace(this);
 										
 									});
@@ -283,7 +285,7 @@
 					<?php if ($wiki->type=="text"):?>
 					<script>
 							$(document).ready(function() {
-								CodeMirror.fromTextArea(document.getElementById("body"));
+								CodeMirror.fromTextArea(document.getElementById("wikibody"));
 							});
 					</script>	
 					<?php endif; ?>

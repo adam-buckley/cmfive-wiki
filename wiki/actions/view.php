@@ -41,7 +41,7 @@ function view_GET(Web &$w) {
 		// Set edt wiki form
 		$editForm = array(
 			"" => array(
-				array(array("", "textarea", "body", $wp->body, 60, 24, false))
+				array(array("", "textarea", "wikibody", $wp->body, 60, 24, false))
 			)
 		);
 		
