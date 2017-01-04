@@ -14,13 +14,23 @@ function preview_GET(Web &$w) {
 			$w->error("Page does not exist.");
 		}
 		$w->setLayout(null);
+		$body = "";
+		if ($w->type == "richtext") {
+			$body = $wp->body;
+		} else if ($w->type == "markdown") {
+			$body = WikiLib::wiki_format_cebe($wiki, $wp);
+		}
+		$body = $wp->replaceWikiPageLinks($body);
+		echo $body;
+		
+		/**
 		if ($wiki->type=="richtext") {
 			echo $wp->body;
 		} else {
 			$parser = new \cebe\markdown\Markdown();
 			$body=$wp->body;
 			echo $parser->parse($body);
-		}
+		}**/
 		
 		
 		
