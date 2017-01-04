@@ -45,13 +45,16 @@ function view_GET(Web &$w) {
 			)
 		);
 		
-		// Set template vars
-		if ($w->type=="richtext") {
-			$w->ctx("body",$wp->body);
-			
-		} else  {  // richtext etc
-			$w->ctx("body", WikiLib::wiki_format_cebe($wiki, $wp));
+		// Set the wiki body
+		$body = "";
+		if ($w->type == "richtext") {
+			$body = $wp->body;
+		} else if ($w->type == "markdown") {
+			$body = WikiLib::wiki_format_cebe($wiki, $wp);
 		}
+		$body = $wp->replaceWikiPageLinks($body);
+		
+		$w->ctx("body",$body);
 		$w->ctx("wiki", $wiki);
 		$w->ctx("page", $wp);
 		$w->ctx("wiki_hist", $wiki->getHistory());
