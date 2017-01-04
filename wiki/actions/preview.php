@@ -15,9 +15,9 @@ function preview_GET(Web &$w) {
 		}
 		$w->setLayout(null);
 		$body = "";
-		if ($w->type == "richtext") {
+		if ($wiki->type == "richtext") {
 			$body = $wp->body;
-		} else if ($w->type == "markdown") {
+		} else if ($wiki->type == "markdown") {
 			$body = WikiLib::wiki_format_cebe($wiki, $wp);
 		}
 		$body = $wp->replaceWikiPageLinks($body);
