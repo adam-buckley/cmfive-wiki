@@ -15,7 +15,7 @@ function view_GET(Web &$w) {
 		if (empty($wiki->id)) {
 			$w->error("Wiki does not exist.");
 		}
-
+		
 		// If page doesn't exist, make one
 		if (strlen(trim($pm['pagename']))=='') {
 			$pm['pagename']="HomePage";
@@ -27,6 +27,7 @@ function view_GET(Web &$w) {
 		if (!$wp) {
 			$wp = $wiki->addPage($pm['pagename'], "New Page.");
 		}
+		History::add($wp->name.", ".$wiki->name);
 		
 		// Reset wiki breadcrumbs
 		if ($pm['pagename'] == "HomePage") {
