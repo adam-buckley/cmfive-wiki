@@ -1,0 +1,51 @@
+[[title|Standard Wiki Shortcodes and Macros]]
+
+<h2>Shortcodes</h2>
+Wiki shortcodes are evaluated just prior to the wiki page being rendered on the screen. 
+Therefore shortcodes always get replaced by HTML code.
+
+Any cmfive module can implement custom shortcodes, however the following standard
+Wiki shortcodes are always available:
+
+<h3>Linking to a Wiki Page</h3>
+When linking to a wiki page, it doesn't matter whether that page actually exists or not.
+In fact linking to a non-existing wiki page is the <b>only</b> way in which new pages can be
+created in the wiki. 
+
+<pre>
+[[page|ThisIsANewPage(|Optional Page Titel)]]
+</pre>
+
+The page title is optional, but it helps with readability.
+
+<h3>Linking to a URL</h3>
+Although both markdown and richtext have facilities to make this simpler, this
+shortcode adds a consistent way to link to other webpages. It also has the
+advantage that the link title is optional.
+
+<pre>
+[[link|http://www.this-is-a-url.com(|Optional Link Titel)]]
+</pre>
+
+<h3>Embedding video content</h3>
+Currently only youtube and vimeo hosted videos are supported. The shortcode
+only expects the <b>id</b> of the video. So if the youtube link is
+
+<pre>
+https://youtu.be/g_cpVyZ_ZSY
+</pre>
+
+then the <b>id</b> is <b>g_cpVyZ_ZSY</b>.
+
+To embed this video, use the following shortcode:
+
+<pre>
+[[video|youtube|g_cpVyZ_ZSY|A great video]]
+</pre>
+
+The full definition of the shortcode is:
+<pre>
+[[video|{vimeo/youtube/local}|{id/filename}|{title}(|{width}|{height})]]
+</pre>
+
+The width and height parameters are optional.

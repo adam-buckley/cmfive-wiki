@@ -3,7 +3,32 @@
 /**
  * Wiki Macro
  *
+ * @@timestamp@@
+ * 
+ * Replaces with a bold current timestamp, eg. 
+ * *07/01/2017 02:34 pm* for markdown and 
+ * html codes for html/richtext 
+ *
+ * @param Web $w
+ * @param Array[wiki:,page:,options:] $params
+ */
+function wiki_wiki_macro_timestamp_do(Web $w, $params) {
+	$wiki = $params['wiki'];
+	$page = $params['page'];
+	if ($wiki->type == "markdown") {
+		return "**".date("d/m/Y h:i a")."** ";
+	} else {
+		return "<b>".date("d/m/Y h:i a")."</b>&nbsp;";
+	}
+}
+/**
+ * Wiki Macro
+ *
  * @@userstamp@@
+ * 
+ * replaces with user name and current timestamp, eg.
+ * *Admin Admin, 07/01/2017 02:34 pm* for markdown and 
+ * html codes for html/richtext 
  *
  * @param Web $w
  * @param Array[wiki:,page:,options:] $params
@@ -12,9 +37,9 @@ function wiki_wiki_macro_userstamp_do(Web $w, $params) {
 	$wiki = $params['wiki'];
 	$page = $params['page'];
 	if ($wiki->type == "markdown") {
-		return "**".$w->Auth->user()->getFullName().",".date("d/m/Y")."** ";
+		return "**".$w->Auth->user()->getFullName().",".date("d/m/Y h:i a")."** ";
 	} else {
-		return "<b>".$w->Auth->user()->getFullName().",".date("d/m/Y")."</b>&nbsp;";
+		return "<b>".$w->Auth->user()->getFullName().",".date("d/m/Y h:i a")."</b>&nbsp;";
 	}
 }
 
