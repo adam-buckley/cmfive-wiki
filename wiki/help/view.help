@@ -1,2 +1,5 @@
 [[title|Viewing and Editing a Wiki Page]]
-
+<ul>
+    <li>[[help|wiki/markdown|Markdown Formatting Instructions]]</li>
+    <li>[[help|wiki/shortcodes|Standard Wiki Shortcodes and Macros]]</li>
+</ul>
