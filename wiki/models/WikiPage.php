@@ -19,6 +19,13 @@ class WikiPage extends DbObject {
 	 */
 	public $children = ""; 
 	
+	/**
+	 * search the body for page shortcodes and store the page names
+	 * in the children list.
+	 * 
+	 * @param string $force_update
+	 * @return string
+	 */
 	function getChildren($force_update = false) {
 		if ($force_update) {
 			$matches = [];
@@ -35,10 +42,20 @@ class WikiPage extends DbObject {
 						$children[]=$options[0]; // save only the page name
 					}
 				}
-				$this->children = implode(",", $children);
+				$this->children = "|".implode("|", array_unique($children))."|";
 			}
 		}
 		return $this->children;
+	}
+	
+	/**
+	 * find all wiki pages which list this page's name in
+	 * their children list.
+	 * 
+	 * @return array of wiki objects
+	 */
+	function getParents() {
+		return [];
 	}
 	
 	function getWiki() {
