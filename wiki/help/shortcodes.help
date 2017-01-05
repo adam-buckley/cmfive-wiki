@@ -19,51 +19,51 @@ created in the wiki.
 The page title is optional, but it helps with readability.
 
 <h3>Linking to a URL</h3>
-Although both markdown and richtext have facilities to make this simpler, this
+<p>Although both markdown and richtext have facilities to make this simpler, this
 shortcode adds a consistent way to link to other webpages. It also has the
-advantage that the link title is optional.
+advantage that the link title is optional.</p>
 
 <pre>
 [[link|http://www.this-is-a-url.com(|Optional Link Titel)]]
 </pre>
 
 <h3>Embedding video content</h3>
-Currently only youtube and vimeo hosted videos are supported. The shortcode
-only expects the <b>id</b> of the video. So if the youtube link is
+<p>Currently only youtube and vimeo hosted videos are supported. The shortcode
+only expects the <b>id</b> of the video. So if the youtube link is</p>
 
 <pre>
 https://youtu.be/g_cpVyZ_ZSY
 </pre>
 
-then the <b>id</b> is <b>g_cpVyZ_ZSY</b>.
+<p>then the <b>id</b> is <b>g_cpVyZ_ZSY</b>.</p>
 
-To embed this video, use the following shortcode:
+<p>To embed this video, use the following shortcode:</p>
 
 <pre>
 [[ video|youtube|g_cpVyZ_ZSY|A great video]]
 </pre>
 
-The full definition of the shortcode is:
+<p>The full definition of the shortcode is:</p>
 <pre>
 [[ video|{vimeo/youtube/local}|{id/filename}|{title}(|{width}|{height})]]
 </pre>
 
-The width and height parameters are optional.
+<p>The width and height parameters are optional.</p>
 
 <h2>Macros</h2>
-Macros are like shortcodes in that they get replaced with something else. However macros are getting
+<p>Macros are like shortcodes in that they get replaced with something else. However macros are getting
 replaced just prior to the wiki page being <b>saved</b> in the database. This means that macros get replaced
-with either markdown or html (depending on the type of wiki) or even with shortcodes!
+with either markdown or html (depending on the type of wiki) or even with shortcodes!</p>
 
 <h3>Inject the current date and time</h3>
-The following macro will resolve into the current data and time.
+<p>The following macro will resolve into the current data and time.</p>
 <pre>
 @@timestamp@@
 </pre>
 
 <h3>Inject the current user's name and current date and time</h3>
-When using a wiki page for discussion it is useful to timestamp a written section and state one's name. 
-The following macro makes this easy. It gets replaced with your full name and the current date and time.
+<p>When using a wiki page for discussion it is useful to timestamp a written section and state one's name. 
+The following macro makes this easy. It gets replaced with your full name and the current date and time.</p>
 <pre>
 @@userstamp@@
 </pre>

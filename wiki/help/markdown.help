@@ -1,5 +1,4 @@
 [[title|Markdown Formatting Instructions]]
-<h1 style="text-align:center;">Markdown Guide</h1>
 <h4>Emphasis</h4>
 <pre>**<strong>bold</strong>**
 *<em>italics</em>*
@@ -18,9 +17,9 @@
 2. Numbered list item
 3. Numbered list item</pre>
 <h4>Links</h4>
-You can use the Markdown code for links:
+<p>You can use the Markdown code for links:</p>
 <pre>[Text to display](http://www.example.com)</pre>
-Or you can use [[help|wiki/shortcodes|Standard Wiki Shortcodes and Macros]] for this:
+<p>Or you can use [[help|wiki/shortcodes|Standard Wiki Shortcodes and Macros]] for this:</p>
 <pre>[[link|http://www.this-is-a-url.com(|Optional Link Titel)]]</pre>
 <h4>Quotes</h4>
 <pre>> This is a quote.
