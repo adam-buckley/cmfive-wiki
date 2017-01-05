@@ -22,15 +22,17 @@ class WikiPage extends DbObject {
 	function getChildren($force_update = false) {
 		if ($force_update) {
 			$matches = [];
-			preg_match_all("\[\[page((?:\|.*?)*)\]\]",$this->body,$matches);
-			print_r($matches);
+			preg_match_all("/\[\[page((?:\|.*?)*)\]\]/",$this->body,$matches,PREG_SET_ORDER);
 			if (empty($matches)) {
 				$this->children = "";
 			} else {
 				$children = [];
 				foreach ($matches as $match) {
+					if (empty($match)) continue;
 					if (isset($match[1])) {
-						$children[]=$match[1]; // save only the page name
+						$options = explode("|",$match[1]);
+						array_shift($options);
+						$children[]=$options[0]; // save only the page name
 					}
 				}
 				$this->children = implode(",", $children);
