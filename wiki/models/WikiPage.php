@@ -21,7 +21,9 @@ class WikiPage extends DbObject {
 	
 	function getChildren($force_update = false) {
 		if ($force_update) {
+			$matches = [];
 			preg_match_all("\[\[page((?:\|.*?)*)\]\]",$this->body,$matches);
+			print_r($matches);
 			if (empty($matches)) {
 				$this->children = "";
 			} else {
