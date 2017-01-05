@@ -15,11 +15,7 @@
 function wiki_wiki_macro_timestamp_do(Web $w, $params) {
 	$wiki = $params['wiki'];
 	$page = $params['page'];
-	if ($wiki->type == "markdown") {
-		return "**".date("d/m/Y h:i a")."** ";
-	} else {
-		return "<b>".date("d/m/Y h:i a")."</b>&nbsp;";
-	}
+	return date("d/m/Y h:i a");
 }
 /**
  * Wiki Macro
@@ -27,7 +23,7 @@ function wiki_wiki_macro_timestamp_do(Web $w, $params) {
  * @@userstamp@@
  * 
  * replaces with user name and current timestamp, eg.
- * *Admin Admin, 07/01/2017 02:34 pm* for markdown and 
+ * **Admin Admin, 07/01/2017 02:34 pm** for markdown and 
  * html codes for html/richtext 
  *
  * @param Web $w

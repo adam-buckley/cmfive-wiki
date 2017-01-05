@@ -40,12 +40,30 @@ then the <b>id</b> is <b>g_cpVyZ_ZSY</b>.
 To embed this video, use the following shortcode:
 
 <pre>
-[[video|youtube|g_cpVyZ_ZSY|A great video]]
+[[ video|youtube|g_cpVyZ_ZSY|A great video]]
 </pre>
 
 The full definition of the shortcode is:
 <pre>
-[[video|{vimeo/youtube/local}|{id/filename}|{title}(|{width}|{height})]]
+[[ video|{vimeo/youtube/local}|{id/filename}|{title}(|{width}|{height})]]
 </pre>
 
 The width and height parameters are optional.
+
+<h2>Macros</h2>
+Macros are like shortcodes in that they get replaced with something else. However macros are getting
+replaced just prior to the wiki page being <b>saved</b> in the database. This means that macros get replaced
+with either markdown or html (depending on the type of wiki) or even with shortcodes!
+
+<h3>Inject the current date and time</h3>
+The following macro will resolve into the current data and time.
+<pre>
+@@timestamp@@
+</pre>
+
+<h3>Inject the current user's name and current date and time</h3>
+When using a wiki page for discussion it is useful to timestamp a written section and state one's name. 
+The following macro makes this easy. It gets replaced with your full name and the current date and time.
+<pre>
+@@userstamp@@
+</pre>
