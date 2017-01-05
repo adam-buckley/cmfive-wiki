@@ -18,7 +18,7 @@ class WikiService extends DbService {
 	}
 
 	/*****************************
-	 * Retrieve a wiki by it's name
+	 * Retrieve a wiki by its name
 	 * @return Wiki or null
 	 * @throws WikiNoAccessException
 	*****************************/
@@ -48,32 +48,6 @@ class WikiService extends DbService {
 		} else {
 			return null;
 		}
-		/*
-		// admin is allowed access to all records
-		if ($this->w->Auth->user()->is_admin) {
-			return $this->getObjects("Wiki",array("is_deleted" => 0));
-		} else {
-			// get a list of wiki/user associations for the current logged in user 
-			$wus = $this->getObjects("WikiUser", array("user_id" => $this->w->Auth->user()->id));
-			if (!$wus) {
-				return null;
-			}
-			// load wikis this user is associated with
-			foreach ($wus as $wu) {
-				$wikis[$wu->wiki_id] = $this->getObject("Wiki",$wu->wiki_id);
-			} 
-			// also load public wikis 
-			$public=$this->getObjects("Wiki",['is_public'=>true]);
-			foreach ($public as $publicWiki) {
-				$wikis[$publicWiki->id]=$publicWiki;
-			}
-			// also load wikis owned by login user
-			$public=$this->getObjects("Wiki",['owner_id'=>$this->w->Auth->user()->id]);
-			foreach ($public as $publicWiki) {
-				$wikis[$publicWiki->id]=$publicWiki;
-			}
-			return array_values($wikis);
-		}*/
 	}
 	
 	/*****************************

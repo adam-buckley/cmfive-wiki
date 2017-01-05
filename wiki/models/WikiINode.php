@@ -1,5 +1,5 @@
 <?php
-use Sabre\DAV;
+//use Sabre\DAV;
 
 /**
  * INode wrapper for a Wiki
@@ -24,7 +24,7 @@ class WikiINode extends DBObjectINode {
 		return $result;
 	} 
 	
-		/**
+	/**
 	 * Returns a File or Directory object for the child-node of the given name.
 	 */
 	function getChild($name) {

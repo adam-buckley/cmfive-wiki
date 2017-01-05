@@ -2,7 +2,7 @@
 class WikiPage extends DbObject {
 	
 	public $_searchable;
-	public $_exclude_index = array("is_deleted");
+	public $_exclude_index = array("is_deleted","children");
 	
 	public $name;
 	public $wiki_id;
@@ -13,6 +13,29 @@ class WikiPage extends DbObject {
 	public $is_deleted;
 	public $body;
 	
+	/**
+	 * this is a comma separated list of wiki page names which are linked to from this wiki
+	 * these pages are recognised only by the use of the [[page|name|title]] shortcode!
+	 */
+	public $children = ""; 
+	
+	function getChildren($force_update = false) {
+		if ($force_update) {
+			preg_match_all("\[\[page((?:\|.*?)*)\]\]",$this->body,$matches);
+			if (empty($matches)) {
+				$this->children = "";
+			} else {
+				$children = [];
+				foreach ($matches as $match) {
+					if (isset($match[1])) {
+						$children[]=$match[1]; // save only the page name
+					}
+				}
+				$this->children = implode(",", $children);
+			}
+		}
+		return $this->children;
+	}
 	
 	function getWiki() {
 		return $this->Wiki->getWikiById($this->wiki_id);			
@@ -58,78 +81,6 @@ class WikiPage extends DbObject {
 	function printSearchUrl() {
 		return "wiki/view/".$this->getWiki()->name."/".$this->name;
 	}
-	
-	/*********************************************************
-	 * Check if word is a wiki word
-	 * ie an amalgamation of two or more words composed of at least two 
-	 * letters each, without intervening white spaces, where the first 
-	 * letter of each component word is capitalized and the remaining 
-	 * letters are in lowercase.
-	 *********************************************************/
-	function isWikiWord($word) {
-		$i=substr($word,0,1);
-		// basic check if first letter is upper case, string has no spaces and string is all alphabetic charactrs
-		//print_r([$word,strtoupper($i) === $i ,strpos($word,' ')===false ,ctype_alpha($word) === true]);
-		if (strtoupper($i) === $i && strpos($word,' ')===false &&  ctype_alpha($word) === true) {
-			// split word into subwords split by upper case letter
-			$words=[];
-			$wordPos=0;
-			foreach (str_split($word) as $letter) {
-				if (strtoupper($letter) === $letter) {
-					$wordPos++;
-				} 
-				if (!array_key_exists($wordPos,$words)) $words[$wordPos]='';
-				$words[$wordPos].=$letter;
-			}
-			//print_r($words);
-			// are there at least two words with at least two letters per word
-			$result=true;
-			foreach($words as $k => $w) {
-				$result = ($result && strlen($words[$k])>1);
-			}
-			if (count($words) > 1 && $result)  {
-				return $result;
-			}
-		} 
-		return false;
-	}
-	/*********************************************************
-	 * Replace wiki page links
-	 *********************************************************/
-	function replaceWikiPageLinks($body) {
-		$urlParts=explode('/',$this->printSearchUrl());
-		$p1=explode('[[',$body);
-		$final=[];
-		foreach ($p1 as $k=>$token) {
-			$tokenParts=explode(']]',$token);
-			$title=$tokenParts[0];
-			// if content of brackets is a wiki word, link it
-			if ($this->isWikiWord($title)) {
-				$link="";
-				if ($this->getWiki()->type=="richtext") {
-					$link="<a class='wikiwordlink wikiwordlink-".$title."' href='".WEBROOT .'/'. implode("/",array_slice($urlParts,0,count($urlParts)-1))."/".$title."' >".$title."</a>";
-				} else if ($this->getWiki()->type=="markdown") {
-					$link="[".$title."](".WEBROOT .'/'. implode("/",array_slice($urlParts,0,count($urlParts)-1))."/".$title.")";
-				} else {
-					$link=$title;
-				}
-				$tokenParts=array_slice($tokenParts,1);
-				$tokenParts[0]=$link.$tokenParts[0];
-				// lose brackets around link on implode
-				// if not the first entry, append to previous entry and slice out current
-				if ($k>0) {
-					$p1[$k-1]=$p1[$k-1].implode("]]",$tokenParts);
-					$p1=array_splice($p1,$k-1,1);
-				} else {
-					$p1[$k]=implode("]]",$tokenParts);
-				} 
-			} else {
-				$p1[$k]=implode("]]",$tokenParts);
-			}
-		}
-		return implode('[[',$p1);
-	}
-
 
 	/*********************************************************
 	 * Update a wiki page and create wiki page history entries
@@ -144,8 +95,8 @@ class WikiPage extends DbObject {
 		}
 		if (!empty($oldRecord)) {
 			if (trim($oldRecord->body) != trim($this->body)) {
-				//$this->body=$this->replaceWikiPageLinks($this->body); // this should be done before DISPLAYING the page!
-				$this->body = WikiLib::replaceWikiMacros($wiki,$wp,$this->body);
+				$this->body = WikiLib::replaceWikiMacros($wiki,$this,$this->body);
+				$this->getChildren(true);
 				// protect against ajax history spamming by diff page vs history save dates
 				$h= $this->getRecentHistory(1);
 				$response=parent::update();
@@ -183,7 +134,8 @@ class WikiPage extends DbObject {
 	 * last_modified_page
 	 *********************************************************/
 	function insert($force_validation = false) {
-		$this->body = WikiLib::replaceWikiMacros($wiki,$wp,$this->body);
+		$this->body = WikiLib::replaceWikiMacros($this->getWiki(),$this,$this->body);
+		$this->getChildren(true);
 		$a=parent::insert();
 		$hist = new WikiPageHistory($this->w);
 		$hist->fill($this->toArray());
@@ -221,52 +173,3 @@ class WikiPage extends DbObject {
 
 
 }
-	
-	/* 
-	* 
-	* 
-	* 
-	* 
-
-FROM UPDATE()
-			// replace wiki links
-			//$this->body = preg_replace("/\[\[([a-zA-Z0-9]+)\]\]/", "<a href='" . WEBROOT . "/wiki/view/" . $wn . "/\\1'>\\1</a>", $this->body);
-			
-			if ($wiki->type=='richtext') {
-				$bodyText=strip_tags($this->body);
-				$bodyParts=explode(' ',$bodyText);
-				$urlParts=explode('/',$this->printSearchUrl());
-				$wikiWords=[];
-				// for html, convert to text to find wiki words
-				foreach ($bodyParts as $k => $token) {
-					if ($this->isWikiWord($token)) {
-						$wikiWords[]=$token;
-					}
-				}
-				print_r($wikiWords);
-				die();
-				// replace wiki words in bodytext with link
-				foreach ($wikiWords as $word) {
-					$this->body=str_replace(
-						$word,
-						"<a href='".WEBROOT . implode("/",array_slice($urlParts,0,count($urlParts)-1))."/".$word."' >".$word."</a>",
-						$this->body
-					);
-				}
-			} else if ($wiki->type=='markdown') {
-				$bodyParts=explode(' ',$this->body);
-				$urlParts=explode('/',$this->printSearchUrl());
-				foreach ($bodyParts as $k => $token) {
-					if ($this->isWikiWord($token)) {
-						$bodyParts[$k]="<a href='".WEBROOT .implode("/",array_slice($urlParts,0,count($urlParts)-1))."/".$token."' >".$token."</a>";
-					}
-				}
-				$this->body=implode(' ',$bodyParts);
-			}
-		//	echo $this->body;
-			//die();
-		
- 
-	* 
-	* 
-	* */
