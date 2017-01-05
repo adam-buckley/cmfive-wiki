@@ -3,7 +3,7 @@
 class WikiAddChildrenColumn extends CmfiveMigration {
 
 	public function up() {
-		$table = $this->table('wiki');
+		$table = $this->table('wiki_page');
 		if (!empty($table)) {
 			$column = $table->hasColumn('children');
 		}
@@ -13,7 +13,7 @@ class WikiAddChildrenColumn extends CmfiveMigration {
 	}
 
 	public function down() {
-		$table = $this->table('wiki');
+		$table = $this->table('wiki_page');
 		if (!empty($table)) {
 			$table->removeColumn('children')->update();
 		}
