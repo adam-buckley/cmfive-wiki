@@ -26,36 +26,52 @@ class WikiPage extends DbObject {
 	 * @param string $force_update
 	 * @return string
 	 */
-	function getChildren($force_update = false) {
-		if ($force_update) {
-			$matches = [];
-			preg_match_all("/\[\[page((?:\|.*?)*)\]\]/",$this->body,$matches,PREG_SET_ORDER);
-			if (empty($matches)) {
-				$this->children = "";
-			} else {
-				$children = [];
-				foreach ($matches as $match) {
-					if (empty($match)) continue;
-					if (isset($match[1])) {
-						$options = explode("|",$match[1]);
-						array_shift($options);
-						$children[]=$options[0]; // save only the page name
-					}
+	private function updateChildren() {
+		$matches = [];
+		preg_match_all("/\[\[page((?:\|.*?)*)\]\]/",$this->body,$matches,PREG_SET_ORDER);
+		if (empty($matches)) {
+			$this->children = "";
+		} else {
+			$children = [];
+			foreach ($matches as $match) {
+				if (empty($match)) continue;
+				if (isset($match[1])) {
+					$options = explode("|",$match[1]);
+					array_shift($options);
+					$children[]=$options[0]; // save only the page name
 				}
-				$this->children = "|".implode("|", array_unique($children))."|";
 			}
+			$this->children = "|".implode("|", array_unique($children))."|";
 		}
-		return $this->children;
 	}
 	
 	/**
 	 * find all wiki pages which list this page's name in
 	 * their children list.
 	 * 
-	 * @return array of wiki objects
+	 * @return array of WikiPage objects
 	 */
 	function getParents() {
-		return [];
+		return $this->getObjects("WikiPage",["is_deleted" => 0, "wiki_id" => $this->wiki_id, "children" => "like '%|{$this->name}|%'"]);
+	}
+	
+	/**
+	 * find all wiki pages which are linked to from this page
+	 * 
+	 * @return array of WikiPage objects
+	 */
+	function getChildren() {
+		$children = [];
+		$names = explode(substr($this->children,1,-1));
+		if (!empty($names)) {
+			foreach ($names as $name) {
+				$page = $this->getObject("WikiPage",["is_deleted"=>0, "name"=>$name]);
+				if (!empty($page)) {
+					$children[]=$page;
+				}
+			}
+		}
+		return $children;
 	}
 	
 	function getWiki() {
@@ -117,7 +133,7 @@ class WikiPage extends DbObject {
 		if (!empty($oldRecord)) {
 			if (trim($oldRecord->body) != trim($this->body)) {
 				$this->body = WikiLib::replaceWikiMacros($wiki,$this,$this->body);
-				$this->getChildren(true);
+				$this->updateChildren();
 				// protect against ajax history spamming by diff page vs history save dates
 				$h= $this->getRecentHistory(1);
 				$response=parent::update();
@@ -156,7 +172,7 @@ class WikiPage extends DbObject {
 	 *********************************************************/
 	function insert($force_validation = false) {
 		$this->body = WikiLib::replaceWikiMacros($this->getWiki(),$this,$this->body);
-		$this->getChildren(true);
+		$this->updateChildren();
 		$a=parent::insert();
 		$hist = new WikiPageHistory($this->w);
 		$hist->fill($this->toArray());

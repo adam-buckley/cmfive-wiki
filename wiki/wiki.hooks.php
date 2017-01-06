@@ -113,3 +113,38 @@ function wiki_wiki_shortcode_video_do(Web $w, $params) {
 			return "";
 	}
 }
+
+/**
+ * Wiki Shortcode
+ *
+ * [[parents(|{list|flat})]]
+ * 
+ * List all wiki pages which link to this page
+ * 
+ * The optional format option is either:
+ * 
+ * list - puts links into an html list (default)
+ * flat - comma separated links on one line
+ *
+ * @param Web $w
+ * @param Array[wiki:,page:,options:] $params
+ */
+function wiki_wiki_shortcode_parents_do(Web $w, $params) {
+	$wiki = $params['wiki'];
+	$page = $params['page'];
+	if (!empty($params['options'])) {
+		$format = empty($params['options'][0]) ? "list" : $params['options'][0];
+	}
+	$parents = $page->getParents();
+	$html = "";
+	if (!empty($parents)) {
+		foreach ($parents as $parent) {
+			$link="<a class='wikiwordlink wikiwordlink-".$parent->name."' href='".WEBROOT .'/wiki/view/'.$wiki->name."/".$parent->name."' >".$parent->name."</a>";
+			$html+=$format == "list" ? "<li>" . $link . "</li>" : $link . ", ";
+		}
+	}
+	if (!empty($html)) {
+		$html = $format == "list" ? "<ul>".$html."</ul>" : "<p>".substr($html, 0, -2)."</p>";
+	}
+	return $html;
+}
