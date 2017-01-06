@@ -52,7 +52,7 @@ class WikiPage extends DbObject {
 	 * @return array of WikiPage objects
 	 */
 	function getParents() {
-		return $this->getObjects("WikiPage",["is_deleted" => 0, "wiki_id" => $this->wiki_id, "children" => "like '%|{$this->name}|%'"]);
+		return $this->getObjects("WikiPage",["is_deleted" => 0, "wiki_id" => $this->wiki_id, "children LIKE ?" => "%|{$this->name}|%"]);
 	}
 	
 	/**
