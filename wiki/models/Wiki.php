@@ -164,7 +164,7 @@ class Wiki extends DbObject{
 	*****************************/	
 	function canEdit(User $user) {
 		$wu = $this->getObject("WikiUser",array("user_id"=>$user->id,"wiki_id"=>$this->id,"role"=>"editor"));
-		return $this->Auth->user()->is_admin ||$this->isOwner($user)  || ($wu != null && $wu->role == "editor");
+		return $this->Auth->user()->is_admin ||$this->isOwner($user)  || (!empty($wu) && $wu->role == "editor");
 	}
 
 	/*****************************

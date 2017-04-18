@@ -3,6 +3,7 @@
 
 	<div class="tabs">
 		<div>
+            <?php echo $w->Favorite->getFavoriteButton($page);?>
 			<div class="tab-head">
 				<a href="#view">View</a>
 				<a href="#wiki-history">Wiki History</a>
@@ -31,7 +32,7 @@
 				<span id="wikiautosavebuttons" style="float:right; display: none;" ><button class="button tiny tiny button savedbutton" disabled="true" type="submit">Saved</button><button class="button tiny tiny button savebutton" disabled="true" type="submit">Saving</button></span>
 
 				<?php echo $w->partial('listTags',['object' => $page], 'tag'); ?>
-				<?php echo $w->Favorite->getFavoriteButton($page);?>
+				
                         
 
 			</div>
