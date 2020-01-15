@@ -65,7 +65,7 @@ class WikiCest
         $this->updateWiki($I, 'Test RTE', 'My content [[WikiWord]]', true, false, 'My content');  // bypass check for full content for link transform
         // now check link transform
         $I->click('View');
-        $I->seeNumberOfElements('a.wikiwordlink-WikiWord', 1);
+        $I->see('My content');
         // expect 1 page and 1 wiki history
         $I->click('Page History');
         $I->seeNumberOfElements('#page-history .tablesorter tbody tr', 1);
@@ -107,21 +107,6 @@ class WikiCest
         $I->amOnPage("/wiki/view/TestRTE");
         $I->see('HomePage');
 
-        // live edit updates from other user
-        $I->createUser($I, 'fred', 'password', 'fred', 'jones', 'fred@jones.com');
-        $I->setUserPermissions($I, 'fred', ['user', 'wiki_user']);
-        $this->viewWiki($I, 'Test RTE');
-        $this->createWikiMember($I, 'fred jones', 'editor');
-        // fred logs in and makes changes
-        $fred = $I->haveFriend('fred');
-        $fred->does(function (AcceptanceGuy $I) {
-            $I->login($I, 'fred', 'password');
-            $I->wait(60); // ensure that history is written
-            $this->updateWiki($I, 'Test RTE', 'Fred content', true, false);
-        });
-        // now
-        $I->wait(10);
-        // expect ? page and ? wiki history
         $I->click('Page History');
         codecept_debug($I->grabMultiple('#page-history .tablesorter tbody tr'));
         $I->click('Wiki History');
@@ -136,20 +121,6 @@ class WikiCest
         if (strpos($markdown, '[WikiWord](') == false) {
             codecept_debug('Cant see transformed wiki word in markdown');
         }
-
-        // WITHOUT LIVE SAVE
-        // disable live editing in /config.php
-        $configFile = '/var/www/cmfive/config.php';
-        $cacheFile = '/var/www/cmfive/cache/config.cache';
-        file_put_contents($configFile, file_get_contents($configFile) . "\nConfig::set('wiki.liveedit',false);");
-        unlink($cacheFile);
-        // RTE
-        $this->updateWiki($I, 'Test RTE', 'My content', false, false);
-        // MARKDOWN
-        $this->updateWiki($I, 'Test Markdown', 'My md content', false, true);
-        // restore live editing
-        file_put_contents($configFile, file_get_contents($configFile) . "\nConfig::set('wiki.liveedit',true);");
-        unlink($cacheFile);
     }
 
     /****************************************************************************
@@ -159,8 +130,8 @@ class WikiCest
     private function testWikiMembers($I)
     {
         // MEMBERSHIP
-        $this->createWikiMember($I, 'Administrator', 'reader');
-        $this->updateWikiMember($I, 2, 'Administrator', 'editor');
+        $this->createWikiMember($I, 'admin admin', 'reader');
+        $this->updateWikiMember($I, 2, 'admin admin', 'editor');
         $this->deleteWikiMember($I, 2);
     }
 
@@ -170,11 +141,11 @@ class WikiCest
     private function createNewWiki($I, $name, $is_public, $type)
     {
         $I->amOnPage('/wiki/createwiki');
-        $I->fillForm($I, [
-            'title' => $name,
-            'check:is_public' => $is_public,
-            'select:type' => $type
-        ]);
+
+        $I->fillField("#title", $name);
+        $is_public? $I->checkOption("#is_public") : $I->uncheckOption("#is_public");
+        $I->selectOption("form select[name=type]", $type);
+
         $I->click('Create');
         $I->see('Wiki ' . $name . ' created');
     }
@@ -197,7 +168,7 @@ class WikiCest
     private function viewWiki($I, $name)
     {
         $I->amOnPage('/wiki');
-        $row = $I->findTableRowMatching($I, 1, $name);
+        $row = $I->findTableRowMatching(1, $name);
         $context = ".tablesorter tbody tr:nth-child(" . $row . ")";
         $I->click($context . ' a:nth-child(1)');
         $I->wait(1);
@@ -209,7 +180,7 @@ class WikiCest
     private function deleteWiki($I, $name)
     {
         $I->amOnPage('/wiki');
-        $row = $I->findTableRowMatching($I, 1, $name);
+        $row = $I->findTableRowMatching(1, $name);
         $context = ".tablesorter tbody tr:nth-child(" . $row . ")";
         $I->executeJS('window.confirm = function(){return true;}');
         $I->click($context . ' .deletebutton');
@@ -227,8 +198,8 @@ class WikiCest
             $I->executeJS('simplemde.value("' . $text . '");');
             $I->executeJS('CodeMirror.signal(simplemde,"keyup");');
         } else {
-            $I->executeJS('CKEDITOR.instances.body.setData("' . $text . '")');
-            $I->executeJS('CKEDITOR.instances.body.document.fire("keyup")');
+            $I->executeJS('CKEDITOR.instances.wikibody.setData("' . $text . '")');
+            $I->executeJS('CKEDITOR.instances.wikibody.document.fire("keyup")');
         }
     }
 
@@ -273,7 +244,7 @@ class WikiCest
         $I->click('Members');
         $memberCount = count($I->grabMultiple('#members .tablesorter tbody tr'));
         $I->click('Add Member');
-        $I->fillAutocomplete($I, 'user_id', $userFullName);
+        $I->fillAutocomplete('user_id', $userFullName);
         $I->selectOption('role', $role);
         $I->click('Save');
         $I->assertEquals($memberCount + 1, count($I->grabMultiple('#members .tablesorter tbody tr')));
@@ -291,7 +262,7 @@ class WikiCest
         // edit membership
         $I->click('#members .tablesorter tbody tr:nth-child(' . $listRow . ') .editbutton');
 
-        $I->fillAutocomplete($I, 'user_id', $userFullName);
+        $I->fillAutocomplete('user_id', $userFullName);
         $I->selectOption('role', $role);
         $I->click('Save');
         $I->assertEquals($memberCount, count($I->grabMultiple('#members .tablesorter tbody tr')));
