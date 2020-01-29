@@ -1,2 +1,5 @@
 <?php
-class WikiExistsException extends WikiException { }
+
+class WikiExistsException extends WikiException
+{
+}
