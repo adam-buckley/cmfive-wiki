@@ -29,7 +29,7 @@ function viewhistoryversion_POST(Web &$w)
 
         // Reset wiki breadcrumbs
         if ($pm['pagename'] == "HomePage") {
-            $_SESSION['wikicrumbs'][$pm['wikiname']] = array();
+            $_SESSION['wikicrumbs'][$pm['wikiname']] = [];
         } else {
             $_SESSION['wikicrumbs'][$pm['wikiname']][$pm['pagename']] = 1;
         }
@@ -86,7 +86,7 @@ function viewhistoryversion_GET(Web &$w)
 
         // Reset wiki breadcrumbs
         if ($pm['pagename'] == "HomePage") {
-            $_SESSION['wikicrumbs'][$pm['wikiname']] = array();
+            $_SESSION['wikicrumbs'][$pm['wikiname']] = [];
         } else {
             $_SESSION['wikicrumbs'][$pm['wikiname']][$pm['pagename']] = 1;
         }

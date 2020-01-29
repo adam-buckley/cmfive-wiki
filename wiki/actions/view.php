@@ -32,7 +32,7 @@ function view_GET(Web &$w)
 
         // Reset wiki breadcrumbs
         if ($pm['pagename'] == "HomePage") {
-            $_SESSION['wikicrumbs'][$pm['wikiname']] = array();
+            $_SESSION['wikicrumbs'][$pm['wikiname']] = [];
         } else {
             $_SESSION['wikicrumbs'][$pm['wikiname']][$pm['pagename']] = 1;
         }

@@ -40,10 +40,10 @@ class Wiki extends DbObject
     {
         return $this->getObjects(
             "WikiPage",
-            array(
+            [
                 "is_deleted" => 0,
                 "wiki_id" => $this->id
-            )
+            ]
         );
     }
 
@@ -64,11 +64,11 @@ class Wiki extends DbObject
     {
         return $this->getObject(
             "WikiPage",
-            array(
+            [
                 "is_deleted" => 0,
                 "wiki_id" => $this->id,
                 "name" => $name
-            )
+            ]
         );
     }
 
@@ -80,10 +80,10 @@ class Wiki extends DbObject
     {
         return $this->getObject(
             "WikiPage",
-            array(
+            [
                 "is_deleted" => 0,
                 "id" => $id
-            )
+            ]
         );
     }
 
@@ -147,7 +147,7 @@ class Wiki extends DbObject
      *****************************/
     public function getUsers()
     {
-        return $this->getObjects("WikiUser", array("wiki_id" => $this->id));
+        return $this->getObjects("WikiUser", ["wiki_id" => $this->id]);
     }
 
 
@@ -160,7 +160,7 @@ class Wiki extends DbObject
      *****************************/
     public function canRead(User $user)
     {
-        $wu = $this->getObject("WikiUser", array("user_id" => $user->id, "wiki_id" => $this->id));
+        $wu = $this->getObject("WikiUser", ["user_id" => $user->id, "wiki_id" => $this->id]);
         $ret = ($user->is_admin ||
             $this->is_public ||
             $this->isOwner($user) ||
@@ -184,7 +184,7 @@ class Wiki extends DbObject
      *****************************/
     public function canEdit(User $user)
     {
-        $wu = $this->getObject("WikiUser", array("user_id" => $user->id, "wiki_id" => $this->id, "role" => "editor"));
+        $wu = $this->getObject("WikiUser", ["user_id" => $user->id, "wiki_id" => $this->id, "role" => "editor"]);
         return $this->Auth->user()->is_admin || $this->isOwner($user)  || (!empty($wu) && $wu->role == "editor");
     }
 
@@ -207,7 +207,7 @@ class Wiki extends DbObject
      *****************************/
     public function isUser($user)
     {
-        $wu = $this->getObject("WikiUser", array("user_id" => $user->id, "wiki_id" => $this->id));
+        $wu = $this->getObject("WikiUser", ["user_id" => $user->id, "wiki_id" => $this->id]);
         return $wu != null;
     }
 

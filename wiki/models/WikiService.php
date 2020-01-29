@@ -45,7 +45,7 @@ class WikiService extends DbService
      *****************************/
     public function getWikis()
     {
-        $wikis = $this->getObjects("Wiki", array("is_deleted" => 0));
+        $wikis = $this->getObjects("Wiki", ["is_deleted" => 0]);
         if (!empty($wikis)) {
             foreach ($wikis as $wiki) {
                 if ($wiki->canRead($this->w->Auth->user())) {

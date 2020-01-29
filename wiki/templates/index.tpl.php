@@ -3,7 +3,7 @@
 $wikiCount = 0;
 
 if (!empty($wikis)) {
-    $table[] = array(
+    $table[] = [
         "Wiki Title",
         "Type",
         "Date Created",
@@ -11,7 +11,7 @@ if (!empty($wikis)) {
         "Modified By",
         "Last Page Modified",
         ""
-    );
+    ];
 
     foreach ($wikis as $wi) {
         if ($wi->canView($w->Auth->user())) {
@@ -32,14 +32,14 @@ if (!empty($wikis)) {
             if ($wi->canDelete($w->Auth->user())) {
                 $delLink = Html::ab(WEBROOT . "/wiki/delwiki/" . $wi->id, 'Delete', 'deletebutton', '', 'Do you really want to delete this wiki and all of its pages?');
             }
-            $table[] = array(
+            $table[] = [
                 Html::a(WEBROOT . "/wiki/view/" . urlencode($wi->name) . "/HomePage", "<b>" . $wi->title . "</b>"),
                 $wi->type,
                 formatDateTime(0 + $wi->dt_created),
                 formatDateTime(0 + $lastModifiedDate),
                 $lastModifiedPageUser,
                 Html::a(WEBROOT . "/wiki/view/" . $wi->name . "/" . $lastModifiedPage, $lastModifiedPage), $delLink
-            );
+            ];
         }
     }
     echo Html::table($table, "wikilist", "tablesorter", true);

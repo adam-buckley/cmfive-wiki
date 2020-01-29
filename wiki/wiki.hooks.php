@@ -147,7 +147,7 @@ function wiki_wiki_shortcode_parents_do(Web $w, $params)
     if (!empty($parents)) {
         foreach ($parents as $parent) {
             $link = "<a class='wikiwordlink wikiwordlink-" . $parent->name . "' href='" . WEBROOT . '/wiki/view/' . $wiki->name . "/" . $parent->name . "' >" . $parent->name . "</a>";
-            $html += $format == "list" ? "<li>" . $link . "</li>" : $link . ", ";
+            $html .= $format == "list" ? "<li>" . $link . "</li>" : $link . ", ";
         }
     }
     if (!empty($html)) {

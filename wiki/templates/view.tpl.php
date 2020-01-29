@@ -53,7 +53,7 @@
                 </div>
                 <hr />
                 <div id="viewattachments">
-                    <?php echo $w->partial("listattachmentsplain", array("object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"), "file"); ?>
+                    <?php echo $w->partial("listattachmentsplain", ["object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"], "file"); ?>
                 </div>
                 <script>
                     $(document).ready(function() {
@@ -63,15 +63,15 @@
             </div>
             <div id="wiki-history">
                 <?php
-                $table = array();
+                $table = [];
                 if (!empty($wiki_hist)) {
-                    $table[] = array("Date", "Page", "User");
+                    $table[] = ["Date", "Page", "User"];
                     foreach ($wiki_hist as $wh) {
-                        $table[] = array(
+                        $table[] = [
                             formatDateTime($wh["dt_created"]),
                             Html::a(WEBROOT . "/wiki/viewhistoryversion/" . $wiki->name . "/" . $wh['name'] . "/" . $wh['id'], "<b>" . $wh['name'] . "</b>"),
                             $w->Auth->getUser($wh['creator_id'])->getFullName()
-                        );
+                        ];
                     }
                     echo Html::table($table, "history", "tablesorter", true);
                 } else {
@@ -81,15 +81,15 @@
             </div>
             <div id="page-history">
                 <?php
-                $table = array();
+                $table = [];
                 if ($page_hist) {
-                    $table[] = array("Date", "User", "Action");
+                    $table[] = ["Date", "User", "Action"];
                     foreach ($page_hist as $ph) {
-                        $table[] = array(
+                        $table[] = [
                             formatDateTime($ph->dt_created),
                             $w->Auth->getUser($ph->creator_id)->getFullName(),
                             Html::a(WEBROOT . "/wiki/viewhistoryversion/" . $wiki->name . "/" . $wh['name'] . "/" . $ph->id, "View", true),
-                        );
+                        ];
                     }
                     echo Html::table($table, "history", "tablesorter", true);
                 } else {
@@ -292,7 +292,7 @@
                     <?php echo $editForm; ?>
 
                     <div id="editattachments">
-                        <?php echo $w->partial("listattachmentsplain", array("object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"), "file"); ?>
+                        <?php echo $w->partial("listattachmentsplain", ["object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"], "file"); ?>
                     </div>
                     <script>
                         $(document).ready(function() {
@@ -335,12 +335,12 @@
             <?php endif; ?>
             <?php if ($w->Auth->hasRole('comment')) : ?>
                 <div id="comments">
-                    <?php echo $w->partial("listcomments", array("object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#comments"), "admin"); ?>
+                    <?php echo $w->partial("listcomments", ["object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#comments"], "admin"); ?>
                 </div>
             <?php endif; ?>
             <?php if ($w->Auth->hasRole('file_upload') && $w->Auth->hasRole('file_download')) : ?>
                 <div id="attachments">
-                    <?php echo $w->partial("listattachments", array("object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"), "file"); ?>
+                    <?php echo $w->partial("listattachments", ["object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"], "file"); ?>
                 </div>
             <?php endif; ?>
             <?php

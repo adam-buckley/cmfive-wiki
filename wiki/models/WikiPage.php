@@ -3,7 +3,7 @@
 class WikiPage extends DbObject
 {
     public $_searchable;
-    public $_exclude_index = array("is_deleted", "children");
+    public $_exclude_index = ["is_deleted", "children"];
 
     public $name;
     public $wiki_id;
@@ -98,7 +98,7 @@ class WikiPage extends DbObject
 
     public function getHistory()
     {
-        return $this->getObjects("WikiPageHistory", array("wiki_page_id" => $this->id), false, true, 'dt_created desc,name asc', null);
+        return $this->getObjects("WikiPageHistory", ["wiki_page_id" => $this->id], false, true, 'dt_created desc,name asc', null);
     }
 
     /*****************************
@@ -107,7 +107,7 @@ class WikiPage extends DbObject
      *****************************/
     public function getRecentHistory($limit = 1)
     {
-        return $this->getObjects("WikiPageHistory", array("wiki_id" => $this->wiki_id, "wiki_page_id" => $this->id), false, true, 'dt_created desc,name asc', null, $limit);
+        return $this->getObjects("WikiPageHistory", ["wiki_id" => $this->wiki_id, "wiki_page_id" => $this->id], false, true, 'dt_created desc,name asc', null, $limit);
     }
 
 
