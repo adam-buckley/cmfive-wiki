@@ -1,25 +1,30 @@
 <?php
-class WikiPageHistory extends WikiPage {
-	
-	// remove the searchable aspect which was defined
-	// in the parent class
-	public $_remove_searchable;
-	
-	public $wiki_page_id;
 
-	function update($force_null_values = false, $force_validation = false) {
-		DbObject::update();
-	}
+class WikiPageHistory extends WikiPage
+{
+    // remove the searchable aspect which was defined
+    // in the parent class
+    public $_remove_searchable;
 
-	function insert($force_validation = false) {
-		DbObject::insert();
-	}
-	
-	function delete($force = false) {
-		DbObject::delete($force);
-	}
+    public $wiki_page_id;
 
-	function getDbTableName() {
-		return "wiki_page_history";
-	}
+    public function update($force_null_values = false, $force_validation = false)
+    {
+        DbObject::update();
+    }
+
+    public function insert($force_validation = false)
+    {
+        DbObject::insert();
+    }
+
+    public function delete($force = false)
+    {
+        DbObject::delete($force);
+    }
+
+    public function getDbTableName()
+    {
+        return "wiki_page_history";
+    }
 }
