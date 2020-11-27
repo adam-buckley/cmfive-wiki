@@ -15,7 +15,7 @@ class WikiINode extends DBObjectINode
         $children = $this->getDBObject()->getPages();
         if (is_array($children)) {
             foreach ($children as  $object) {
-                if ($object->canList($this->w->Auth->user())) {
+                if ($object->canList(AuthService::getInstance($this->w)->user())) {
                     $iNode = new WikiPageINode($this->w, $object);
                     $result[] = $iNode;
                 }
@@ -33,7 +33,7 @@ class WikiINode extends DBObjectINode
         $children = $this->getDBObject()->getPages();
         if (is_array($children)) {
             foreach ($children as $object) {
-                if ($object->canView($this->w->Auth->user())) {
+                if ($object->canView(AuthService::getInstance($this->w)->user())) {
                     if ($object->getSelectOptionTitle() == $name) {
                         $result = new WikiPageINode($this->w, $object);
                     } else {
@@ -48,7 +48,7 @@ class WikiINode extends DBObjectINode
             if (is_array($children)) {
                 foreach ($children as  $object) {
                     if ($object->filename == $name) {
-                        if ($object->canView($this->w->Auth->user())) {
+                        if ($object->canView(AuthService::getInstance($this->w)->user())) {
                             $result = new AttachmentINode($this->w, $object);
                         } else {
                             throw new Exception('No access to this attachment');

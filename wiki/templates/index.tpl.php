@@ -14,7 +14,7 @@ if (!empty($wikis)) {
     ];
 
     foreach ($wikis as $wi) {
-        if ($wi->canView($w->Auth->user())) {
+        if ($wi->canView(AuthService::getInstance($w)->user())) {
             $wikiCount++;
             $lastModifiedPage = "";
             $lastModifiedPageUser = "";
@@ -22,14 +22,14 @@ if (!empty($wikis)) {
             if ($wi->last_modified_page_id > 0) {
                 $p = $wi->getPageById($wi->last_modified_page_id);
                 if (!empty($p)) {
-                    $wuser = $w->Auth->getUser($p->modifier_id);
-                    $lastModifiedPageUser = empty($wuser) ? '' : $w->Auth->getUser($p->modifier_id)->getFullName();
+                    $wuser = AuthService::getInstance($w)->getUser($p->modifier_id);
+                    $lastModifiedPageUser = empty($wuser) ? '' : AuthService::getInstance($w)->getUser($p->modifier_id)->getFullName();
                     $lastModifiedPage = $p->name;
                     $lastModifiedDate = $p->dt_modified;
                 }
             }
             $delLink = "";
-            if ($wi->canDelete($w->Auth->user())) {
+            if ($wi->canDelete(AuthService::getInstance($w)->user())) {
                 $delLink = Html::ab(WEBROOT . "/wiki/delwiki/" . $wi->id, 'Delete', 'deletebutton', '', 'Do you really want to delete this wiki and all of its pages?');
             }
             $table[] = [

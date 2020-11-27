@@ -109,7 +109,7 @@ class Wiki extends DbObject
             throw new WikiException("This wiki needs a title.");
         }
         $this->name = $this->getName();
-        $this->owner_id = $this->w->Auth->user()->id;
+        $this->owner_id = AuthService::getInstance($this->w)->user()->id;
 
         // check if wiki of the same name exists!
         $ow = $this->Wiki->getWikiByName($this->getName());
@@ -122,7 +122,7 @@ class Wiki extends DbObject
         } else {
             $this->addPage("HomePage", "#This is the HomePage");
         }
-        $this->addUser($this->w->Auth->user(), "editor");
+        $this->addUser(AuthService::getInstance($this->w)->user(), "editor");
     }
 
     /*****************************
@@ -185,7 +185,7 @@ class Wiki extends DbObject
     public function canEdit(User $user)
     {
         $wu = $this->getObject("WikiUser", ["user_id" => $user->id, "wiki_id" => $this->id, "role" => "editor"]);
-        return $this->Auth->user()->is_admin || $this->isOwner($user)  || (!empty($wu) && $wu->role == "editor");
+        return AuthService::getInstance($this->w)->user()->is_admin || $this->isOwner($user)  || (!empty($wu) && $wu->role == "editor");
     }
 
     /*****************************
@@ -194,7 +194,7 @@ class Wiki extends DbObject
      *****************************/
     public function canDelete(User $user)
     {
-        if ($this->isOwner($user) || $this->Auth->user()->is_admin) {
+        if ($this->isOwner($user) || AuthService::getInstance($this->w)->user()->is_admin) {
             return true;
         } else {
             return false;

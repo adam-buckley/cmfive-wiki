@@ -9,12 +9,12 @@
                 <a href="<?php echo htmlentities(WEBROOT . "/wiki/view/" . $wiki->name . "/HomePage"); ?>">Home</a>
             </li>
             <?php
-            if (array_key_exists('wikicrumbs', $_SESSION) and array_key_exists($wiki->name, $_SESSION['wikicrumbs'])) { // $_SESSION['wikicrumbs'][$wiki->name]) {
+            if (array_key_exists('wikicrumbs', $_SESSION) and array_key_exists($wiki->name, $_SESSION['wikicrumbs'])) {
                 foreach (array_keys($_SESSION['wikicrumbs'][$wiki->name]) as $pn) : ?>
                     <li <?php echo ($page->name === "HomePage" ? "class='current'" : ""); ?>>
                         <a href="<?php echo htmlentities(WEBROOT . "/wiki/view/{$wiki->name}/{$pn}"); ?>"><?php echo $pn; ?></a>
                     </li>
-            <?php endforeach;
+                <?php endforeach;
             }
             ?>
         </ul>

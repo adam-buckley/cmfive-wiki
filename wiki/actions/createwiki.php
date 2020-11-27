@@ -10,7 +10,7 @@ function createwiki_POST(Web &$w)
     $is_public = $w->request("is_public");
     $type = $w->request("type");
     try {
-        $wiki = $w->Wiki->createWiki($title, $is_public, $type);
+        $wiki = WikiService::getInstance($w)->createWiki($title, $is_public, $type);
     } catch (WikiException $ex) {
         $w->error($ex->getMessage(), "/wiki/createwiki");
     }

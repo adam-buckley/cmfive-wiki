@@ -11,7 +11,7 @@ function viewhistoryversion_POST(Web &$w)
         }
 
         // Get wiki object and check for existance
-        $wiki = $w->Wiki->getWikiByName($pm['wikiname']);
+        $wiki = WikiService::getInstance($w)->getWikiByName($pm['wikiname']);
         // Register for timelog
 
         if (empty($wiki->id)) {
@@ -35,9 +35,9 @@ function viewhistoryversion_POST(Web &$w)
         }
 
         // Set navigation
-        $w->Wiki->navigation($w, $wiki, $pm["pagename"]);
+        WikiService::getInstance($w)->navigation($w, $wiki, $pm["pagename"]);
 
-        $wikiHistory = $w->Wiki->getObject("WikiPageHistory", $pm["historyid"]);
+        $wikiHistory = WikiService::getInstance($w)->getObject("WikiPageHistory", $pm["historyid"]);
         if (!$wikiHistory) {
             $w->error('No such history item');
         }
@@ -67,9 +67,9 @@ function viewhistoryversion_GET(Web &$w)
         }
 
         // Get wiki object and check for existance
-        $wiki = $w->Wiki->getWikiByName($pm['wikiname']);
+        $wiki = WikiService::getInstance($w)->getWikiByName($pm['wikiname']);
         // Register for timelog
-        $w->Timelog->registerTrackingObject($wiki);
+        TimelogService::getInstance($w)->registerTrackingObject($wiki);
 
         if (empty($wiki->id)) {
             $w->error("Wiki does not exist.");
@@ -92,9 +92,9 @@ function viewhistoryversion_GET(Web &$w)
         }
 
         // Set navigation
-        $w->Wiki->navigation($w, $wiki, $pm["pagename"]);
+        WikiService::getInstance($w)->navigation($w, $wiki, $pm["pagename"]);
 
-        $wikiHistory = $w->Wiki->getObject("WikiPageHistory", $pm["historyid"]);
+        $wikiHistory = WikiService::getInstance($w)->getObject("WikiPageHistory", $pm["historyid"]);
         if (!$wikiHistory) {
             $w->error('No such history item');
         }

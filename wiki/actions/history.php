@@ -13,7 +13,7 @@ function history_GET(Web &$w)
         }
 
         // Get wiki object and check for existance
-        $wiki = $w->Wiki->getWikiByName($pm['wikiname']);
+        $wiki = WikiService::getInstance($w)->getWikiByName($pm['wikiname']);
         // Register for timelog
 
         if (empty($wiki->id)) {
@@ -30,7 +30,7 @@ function history_GET(Web &$w)
         }
 
         // Set navigation
-        $w->Wiki->navigation($w, $wiki, $pm["pagename"]);
+        WikiService::getInstance($w)->navigation($w, $wiki, $pm["pagename"]);
 
         $w->ctx("wiki", $wiki);
         $w->ctx("page", $wp);

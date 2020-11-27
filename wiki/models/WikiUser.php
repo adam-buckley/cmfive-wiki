@@ -7,7 +7,7 @@ class WikiUser extends DbObject
 
     public function getUser()
     {
-        return $this->Auth->getUser($this->user_id);
+        return AuthService::getInstance($this->w)->getUser($this->user_id);
     }
 
     public function getFullName()

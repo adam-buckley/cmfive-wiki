@@ -7,7 +7,7 @@ function edit_POST(Web &$w)
 {
     try {
         $pm = $w->pathMatch("wikiname", "pagename");
-        $wiki = $w->Wiki->getWikiByName($pm['wikiname']);
+        $wiki = WikiService::getInstance($w)->getWikiByName($pm['wikiname']);
         if (!$wiki) {
             $w->error("Wiki does not exist.");
         }

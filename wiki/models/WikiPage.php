@@ -120,7 +120,7 @@ class WikiPage extends DbObject
     {
         $txt = "Last Modified: ";
         $txt .= formatDateTime($this->dt_modified);
-        $txt .= " by " . $this->Auth->getUser($this->modifier_id)->getFullName();
+        $txt .= " by " . AuthService::getInstance($this->w)->getUser($this->modifier_id)->getFullName();
         return $txt;
     }
 

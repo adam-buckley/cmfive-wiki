@@ -7,16 +7,16 @@
                 <a href="#view">View</a>
                 <a href="#wiki-history">Wiki History</a>
                 <a href="#page-history">Page History</a>
-                <?php if ($wiki->canEdit($w->Auth->user())) : ?>
+                <?php if ($wiki->canEdit(AuthService::getInstance($w)->user())) : ?>
                     <a href="#edit">Edit</a>
                 <?php endif; ?>
-                <?php if (($wiki->isOwner($w->Auth->user()) || $w->Auth->user()->is_admin) && $page->name == "HomePage") : ?>
+                <?php if (($wiki->isOwner(AuthService::getInstance($w)->user()) || AuthService::getInstance($w)->user()->is_admin) && $page->name == "HomePage") : ?>
                     <a href="#members">Members</a>
                 <?php endif; ?>
-                <?php if ($w->Auth->hasRole('comment')) : ?>
+                <?php if (AuthService::getInstance($w)->hasRole('comment')) : ?>
                     <a href="#comments">Comments</a>
                 <?php endif; ?>
-                <?php if ($w->Auth->hasRole('file_upload') && $w->Auth->hasRole('file_download')) : ?>
+                <?php if (AuthService::getInstance($w)->hasRole('file_upload') && AuthService::getInstance($w)->hasRole('file_download')) : ?>
                     <a href="#attachments">Attachments</a>
                 <?php endif; ?>
                 <?php
@@ -39,12 +39,12 @@
                         <a href="<?php echo htmlentities(WEBROOT . "/wiki/view/" . $wiki->name . "/HomePage"); ?>">Home</a>
                     </li>
                     <?php
-                    if (array_key_exists('wikicrumbs', $_SESSION) and array_key_exists($wiki->name, $_SESSION['wikicrumbs'])) { // $_SESSION['wikicrumbs'][$wiki->name]) {
+                    if (array_key_exists('wikicrumbs', $_SESSION) and array_key_exists($wiki->name, $_SESSION['wikicrumbs'])) {
                         foreach (array_keys($_SESSION['wikicrumbs'][$wiki->name]) as $pn) : ?>
                             <li <?php echo ($page->name === "HomePage" ? "class='current'" : ""); ?>>
                                 <a href="<?php echo htmlentities(WEBROOT . "/wiki/view/{$wiki->name}/{$pn}"); ?>"><?php echo $pn; ?></a>
                             </li>
-                    <?php endforeach;
+                        <?php endforeach;
                     }
                     ?>
                 </ul>
@@ -70,7 +70,7 @@
                         $table[] = [
                             formatDateTime($wh["dt_created"]),
                             Html::a(WEBROOT . "/wiki/viewhistoryversion/" . $wiki->name . "/" . $wh['name'] . "/" . $wh['id'], "<b>" . $wh['name'] . "</b>"),
-                            $w->Auth->getUser($wh['creator_id'])->getFullName()
+                            AuthService::getInstance($w)->getUser($wh['creator_id'])->getFullName()
                         ];
                     }
                     echo Html::table($table, "history", "tablesorter", true);
@@ -87,7 +87,7 @@
                     foreach ($page_hist as $ph) {
                         $table[] = [
                             formatDateTime($ph->dt_created),
-                            $w->Auth->getUser($ph->creator_id)->getFullName(),
+                            AuthService::getInstance($w)->getUser($ph->creator_id)->getFullName(),
                             Html::a(WEBROOT . "/wiki/viewhistoryversion/" . $wiki->name . "/" . $wh['name'] . "/" . $ph->id, "View", true),
                         ];
                     }
@@ -97,7 +97,7 @@
                 }
                 ?>
             </div>
-            <?php if ($wiki->canEdit($w->Auth->user())) : ?>
+            <?php if ($wiki->canEdit(AuthService::getInstance($w)->user())) : ?>
                 <script>
                     // into global scope to facilitate testing
                     var simplemde;
@@ -284,7 +284,8 @@
                         $(document).ready(function() {
 
                         });
-                    </script> <?php endif; ?>
+                    </script>
+                <?php endif; ?>
 
 
                 <div id="edit" class="clearfix">
@@ -303,7 +304,7 @@
             <?php endif; ?>
 
 
-            <?php if ($wiki->isOwner($w->Auth->user()) && $page->name == "HomePage") : ?>
+            <?php if ($wiki->isOwner(AuthService::getInstance($w)->user()) && $page->name == "HomePage") : ?>
                 <div id="members">
                     <?php echo Html::ab(WEBROOT . "/wiki/editmember/" . $wiki->id, "Add Member", true); ?>
                     <?php if (!empty($wiki_users)) : ?>
@@ -333,12 +334,12 @@
                     <?php endif; ?>
                 </div>
             <?php endif; ?>
-            <?php if ($w->Auth->hasRole('comment')) : ?>
+            <?php if (AuthService::getInstance($w)->hasRole('comment')) : ?>
                 <div id="comments">
                     <?php echo $w->partial("listcomments", ["object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#comments"], "admin"); ?>
                 </div>
             <?php endif; ?>
-            <?php if ($w->Auth->hasRole('file_upload') && $w->Auth->hasRole('file_download')) : ?>
+            <?php if (AuthService::getInstance($w)->hasRole('file_upload') && AuthService::getInstance($w)->hasRole('file_download')) : ?>
                 <div id="attachments">
                     <?php echo $w->partial("listattachments", ["object" => $page, "redirect" => "wiki/view/{$wiki->name}/{$page->name}#attachments"], "file"); ?>
                 </div>

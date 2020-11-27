@@ -13,7 +13,7 @@ class WikiService extends DbService
     public function getWikiById($wiki_id)
     {
         $wiki = $this->getObject("Wiki", $wiki_id);
-        if ($wiki && $wiki->canRead($this->w->Auth->user())) {
+        if ($wiki && $wiki->canRead(AuthService::getInstance($this->w)->user())) {
             return $wiki;
         } else {
             throw new WikiNoAccessException("You have no access to this wiki.");
@@ -33,7 +33,7 @@ class WikiService extends DbService
             return null;
         }
 
-        if ($wiki->canRead($this->w->Auth->user())) {
+        if ($wiki->canRead(AuthService::getInstance($this->w)->user())) {
             return $wiki;
         } else {
             throw new WikiNoAccessException("You have no access to this wiki.");
@@ -48,7 +48,7 @@ class WikiService extends DbService
         $wikis = $this->getObjects("Wiki", ["is_deleted" => 0]);
         if (!empty($wikis)) {
             foreach ($wikis as $wiki) {
-                if ($wiki->canRead($this->w->Auth->user())) {
+                if ($wiki->canRead(AuthService::getInstance($this->w)->user())) {
                     $ret[] = $wiki;
                 }
             }

@@ -49,8 +49,7 @@ class Unit extends \Codeception\Module
      ********************/
     public function isTestFolderTree($path)
     {
-        if (
-            is_dir($path . DS . 'testFolder') &&
+        if (is_dir($path . DS . 'testFolder') &&
             is_dir($path . DS . 'testFolder' . DS . 'subFolder1') &&
             is_dir($path . DS . 'testFolder' . DS . 'subFolder2') &&
             is_dir($path . DS . 'testFolder' . DS . 'subFolder1' . DS . 'unit') &&

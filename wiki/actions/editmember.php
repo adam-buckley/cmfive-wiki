@@ -4,8 +4,8 @@ function editmember_GET(Web &$w)
 {
     try {
         $pm = $w->pathMatch("wid", "mid");
-        $wiki = $w->Wiki->getWikiById($pm['wid']);
-        if (!$wiki || !$wiki->isOwner($w->Auth->user())) {
+        $wiki = WikiService::getInstance($w)->getWikiById($pm['wid']);
+        if (!$wiki || !$wiki->isOwner(AuthService::getInstance($w)->user())) {
             $w->error("No access to this wiki.");
         }
         $mem = $wiki->getUserById($pm['mid']);
@@ -23,8 +23,8 @@ function editmember_POST(&$w)
 {
     try {
         $pm = $w->pathMatch("wid", "mid");
-        $wiki = $w->Wiki->getWikiById($pm['wid']);
-        if (!$wiki || !$wiki->isOwner($w->Auth->user())) {
+        $wiki = WikiService::getInstance($w)->getWikiById($pm['wid']);
+        if (!$wiki || !$wiki->isOwner(AuthService::getInstance($w)->user())) {
             $w->error("No access to this wiki.");
         }
         $mem = $wiki->getUserById($pm['mid']);

@@ -11,7 +11,7 @@ function view_GET(Web &$w)
         }
 
         // Get wiki object and check for existance
-        $wiki = $w->Wiki->getWikiByName($pm['wikiname']);
+        $wiki = WikiService::getInstance($w)->getWikiByName($pm['wikiname']);
 
         if (empty($wiki->id)) {
             $w->error("Wiki does not exist.");
@@ -23,7 +23,7 @@ function view_GET(Web &$w)
         }
         $wp = $wiki->getPage($pm['pagename']);
         // Register for timelog
-        $w->Timelog->registerTrackingObject($wp);
+        TimelogService::getInstance($w)->registerTrackingObject($wp);
 
         if (!$wp) {
             $wp = $wiki->addPage($pm['pagename'], "New Page.");
@@ -38,7 +38,7 @@ function view_GET(Web &$w)
         }
 
         // Set navigation
-        $w->Wiki->navigation($w, $wiki, $pm["pagename"]);
+        WikiService::getInstance($w)->navigation($w, $wiki, $pm["pagename"]);
 
         // Set edt wiki form
         $editForm = [
@@ -64,7 +64,7 @@ function view_GET(Web &$w)
         $w->ctx("wiki_hist", $wiki->getHistory());
         $w->ctx("page_hist", $wp->getHistory());
         $w->ctx("wiki_users", $wiki->getUsers());
-        $w->ctx("attachments", $w->service("File")->getAttachments($wp));
+        $w->ctx("attachments", FileService::getInstance($w)->getAttachments($wp));
         $w->ctx("title", $wiki->title . " - " . $wp->name);
 
         // render form without form tag or buttons (which have been moved into the template) by using the false value for the last parameter
